@@ -1,0 +1,80 @@
+#vim swap files
+*.swp
+
+
+#vim session files
+.vimsession/
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# ctaqgs tag files
+*.localtags
+
+#vim swap files
+*.swp
+
+#vim session files
+.vimsession/
+
+#kdev project files
+*.kdev4
+
+#ogv movie files
+*.ogv
+
+#gedit and kwrite files that end with ~
+*~
+
+#some ros packages directories
+bin/
+build/
+msg_gen/
+srv_gen/
+#**/src/*/
+
+##ignore ros java
+**/.gradle/
+*.bin
+
+ignore log files someone is creating
+*.log
+*.gz
+
+#ignore latex temp files
+*.aux
+*.bbl
+*.blg
+
+#ignore latex beamer temp files
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+
+#ignore octrees
+*.ot
+*.bt
+
+#ignore point clouds
+*.pcd
+
+#ignore Python Compiled Code
+*.pyc
+
+#ignore pdfs
+#*.pdf
+
+.idea/
