@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="task_manager" pkg="task_manager_scxml_server" type="task_manager.py" respawn="false" output="screen">
+  		<!-- <param name="scxml_file" value="$(arg scxml_file)"/> -->
+  </node>
+
+</launch>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml initial="Input Number">
+    <datamodel>
+        <data id="skill_file" expr="${task_manager_scxml_server}/resources/skills.xml"/>
+    </datamodel>
+    <state id="Input Number">
+        <datamodel>
+            <data id="skill" expr="Input"/>
+        </datamodel>
+        <transition event="Out" target="Primes"/>
+        <transition event="Test" target="IsPrime"/>
+        <transition event="Retry" target="Input Number"/>
+    </state>
+    <state id="Primes">
+        <datamodel>
+            <data id="skill" expr="Primes"/>
+        </datamodel>
+        <transition event="Off" target="End"/>
+        <transition event="Reset" target="Input Number"/>
+        <transition event="Continue" target="Input Number"/>
+    </state>
+    <state id="IsPrime">
+        <transition type="external" event="Return" target="Input Number"/>
+        <datamodel>
+            <data id="skill" expr="isPrime"/>
+        </datamodel>
+    </state>
+    <final id="End"/>
+</scxml>

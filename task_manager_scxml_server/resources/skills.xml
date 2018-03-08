@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<skills>
+	<!-- Tutotial 1 Skills -->
+	<skill name="Input"		pkg="airbus_ssm_tutorial" 	module="airbus_ssm_tutorial1.skills" 	class="Input"/>
+	<skill name="isPrime"	pkg="airbus_ssm_tutorial" 	module="airbus_ssm_tutorial1.skills" 	class="isPrime"/>
+	<skill name="Primes"	pkg="airbus_ssm_tutorial" 	module="airbus_ssm_tutorial1.skills" 	class="Primes"/>
+	<!-- Test Skills -->
+	<skill name="Test1"		pkg="airbus_ssm_tutorial" 	module="ssm_test_skills.skills" class="Test1"/>
+	<skill name="Test2"		pkg="airbus_ssm_tutorial" 	module="ssm_test_skills.skills" class="Test2"/>
+	<skill name="Test3"		pkg="airbus_ssm_tutorial" 	module="ssm_test_skills.skills" class="Test3"/>
+
+    <!-- Test with wait skill -->
+    <skill name="wait"  pkg="airbus_ssm_tutorial"   module="ssm_test_skills.skills" class="waitTime"/>
+
+ </skills>
