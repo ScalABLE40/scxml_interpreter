@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scxml initial="Input Number">
     <datamodel>
-        <data id="skill_file" expr="${task_manager_scxml_server}/resources/skills.xml"/>
+        <data id="skill_file" expr="${scxml_interpreter}/resources/skills.xml"/>
     </datamodel>
     <state id="Input Number">
         <datamodel>
