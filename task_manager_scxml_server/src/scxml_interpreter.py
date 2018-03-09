@@ -177,6 +177,92 @@ class SCXMLInterpreter(object):
         else:
             return SM
 
+    def constructCompoundState(self, current_level, parent, current_openSM, mainSM, final_states):
+        ##State is parent ==> it's a state machine
+        ID = current_level.attrib.get('id')
+
+        if (ID is None):
+            rospy.logerr("[SCXML Interpreter] No ID for a State !!!!")
+            self.CheckBool = False
+            return
+            ##get onEntry and onExit
+        onEntry = self.get_on_entry(current_level)
+        onExit = self.get_on_exit(current_level)
+        ##add to the parent list
+        self._next_parent_list.append(parent + "/state[@id='" + str(ID) + "']")
+        ##Find the transitions
+        transitions_ = {}
+        outcomes_ = []
+        ##If the current_openSM is not a concurence then we can map the outcome, otherwise we have to map on this level
+        ##Because there is no final state for a concurence and he can not transition to another state
+        if (type(current_openSM) is not ssm_concurrence.ssmConcurrence):
+            for transition in current_level.findall('transition'):
+                event = transition.attrib.get('event')
+                if (event is None):
+                    rospy.logerr("[SCXML Interpreter] No Transition Event for %s !!!!" % ID)
+                    self.CheckBool = False
+                    return
+                target = transition.attrib.get('target')
+                if (target is None):
+                    rospy.logerr("[SCXML Interpreter] No Transition Target for %s !!!!" % ID)
+                    self.CheckBool = False
+                    return
+                ##if target a final state send we set on the outcome
+                for final_id in final_states:
+                    if (target == final_id):
+                        target = event
+
+                outcomes_.append(event)
+                transitions_[event] = target
+        else:
+            ##remplace the final states of the parent to this level
+            final_states = self.get_final_states_id(current_level)
+            if (final_states == None):
+                rospy.logerr("[SCXML Interpreter] No final State found in " + ID + " !!!!")
+                self.CheckBool = False
+                return
+            ##if target a final state send we set on the outcome
+            for final_id in final_states:
+                for transition in current_level.findall("./state/transition[@target='" + str(final_id) + "']"):
+                    event = transition.attrib.get('event')
+                    if (event is None):
+                        rospy.logerr("[SCXML Interpreter] No Transition Event for %s !!!!" % ID)
+                        self.CheckBool = False
+                        return
+                    target = transition.attrib.get('target')
+                    if (target is None):
+                        rospy.logerr("[SCXML Interpreter] No Transition Target for %s !!!!" % ID)
+                        self.CheckBool = False
+                        return
+
+                    outcomes_.append(event)
+                    transitions_[event] = target
+
+        ##Add the datamodel
+        datamodel_ = self.get_datamodel(current_level, mainSM, ID)
+        if (datamodel_ is None):
+            return
+            ##Find the io_keys
+        keys_ = self.findIOkeys(current_level, ID)
+        if (keys_ is None):
+            return
+        ##Add the intial state
+        initial = current_level.find("initial")
+        if (initial is None):
+            rospy.logerr("[SCXML Interpreter] No Initial state for a Parent State !!!!")
+            self.CheckBool = False
+            return
+
+        newSM = ssm_state_machine.ssmStateMachine(outcomes_, input_keys=keys_,
+                                                  output_keys=keys_)  ##Define the empty state machine
+        newSM._datamodel = datamodel_
+        newSM._onEntry = onEntry
+        newSM._onExit = onExit
+
+        newSM._initial_state_label = str(initial.find('transition').attrib.get('target'))
+        self.addToSM(current_openSM, ID, newSM, transitions_, keys_)
+        self._next_SM_list.append(newSM)
+
 
 
 

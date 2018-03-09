@@ -7,5 +7,5 @@ class StateMachine(smach.StateMachine):
         self.register_outcomes(["preempt"])
         self._datamodel = {}
 
-class SkillStateMachine(smach.StateMachine):
-    
+class Skill(smach.StateMachine):
+
