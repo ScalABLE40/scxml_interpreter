@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" name="generic_skill" qt:editorversion="4.4.1" initial="WaitSkill">
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" name="generic_skill" qt:editorversion="4.6.1" initial="WaitSkill">
     <qt:editorinfo initialGeometry="633.86;79.37;-20;-20;40;40"/>
     <state id="WaitSkill">
         <qt:editorinfo scenegeometry="418.96;235.39;408.39;143.22;477.41;660.01" geometry="418.96;235.39;-10.57;-92.17;477.41;660.01"/>
         <datamodel>
             <data id="skill" expr="WaitSkill"/>
+            <data id="waitTime" expr="1.0"/>
+            <data id="data" expr="{&quot;waitTime2&quot;:2.0}">
+                <qt:editorinfo geometry="26.49;30.57;0;0;0;0"/>
+            </data>
         </datamodel>
         <transition type="external" event="aborted" target="Final_4">
             <qt:editorinfo startTargetFactors="12.10;97.42"/>
@@ -20,10 +24,10 @@
             </datamodel>
             <transition type="external" event="succeeded" target="WaitSkill_EXECUTION"/>
             <transition type="external" event="preempted" target="preempted">
-                <qt:editorinfo localGeometry="198.07;6.54"/>
+                <qt:editorinfo localGeometry="198.68;6.54"/>
             </transition>
             <transition type="external" event="aborted" target="aborted">
-                <qt:editorinfo localGeometry="-197.67;-0.01"/>
+                <qt:editorinfo localGeometry="-197.62;-0.01"/>
             </transition>
         </state>
         <state id="WaitSkill_EXECUTION">
@@ -33,7 +37,7 @@
                 <qt:editorinfo localGeometry="130.98;5.39"/>
             </transition>
             <transition type="external" event="aborted" target="aborted">
-                <qt:editorinfo localGeometry="-197.43;5.68"/>
+                <qt:editorinfo localGeometry="-197.61;5.68"/>
             </transition>
             <datamodel>
                 <data id="stage" expr="execution"/>
