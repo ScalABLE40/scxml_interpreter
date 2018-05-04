@@ -21,7 +21,7 @@ import re
 from roslib.packages import get_pkg_dir
 import xml.etree.ElementTree as etree
 from skill_provider import SkillProvider
-from skill_class import StateMachine
+#from skill_class import StateMachine
 import smach
 import sys
 from os import path

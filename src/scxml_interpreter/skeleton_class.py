@@ -28,7 +28,7 @@ class CoumpoundStateSkeleton(object):
 
 class RootStateSkeleton(object):
     def __init__(self, initial_state_id="", data={}, final_states=[], states=[]):
-        self.initial_state = initial_state
+        self.initial_state_id = initial_state_id
         self.data = data
         self.final_states = final_states
         self.states = states
