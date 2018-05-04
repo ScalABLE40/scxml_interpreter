@@ -4,11 +4,12 @@
     <state id="WaitSkill">
         <qt:editorinfo scenegeometry="418.96;235.39;408.39;143.22;477.41;660.01" geometry="418.96;235.39;-10.57;-92.17;477.41;660.01"/>
         <datamodel>
-            <data id="skill" expr="WaitSkill"/>
-            <data id="waitTime" expr="1.0"/>
-            <data id="data" expr="{&quot;waitTime2&quot;:2.0}">
+            <data id="actionName" expr="&quot;/waitskill&quot;"/>
+            <data id="actionGoal" expr="{&quot;waitTime&quot;:2.0}">
                 <qt:editorinfo geometry="26.49;30.57;0;0;0;0"/>
             </data>
+            <data id="actionType" expr="waitskill/waitskill"/>
+            <data id="actionResult" expr="{}"/>
         </datamodel>
         <transition type="external" event="aborted" target="Final_4">
             <qt:editorinfo startTargetFactors="12.10;97.42"/>
@@ -24,7 +25,7 @@
             </datamodel>
             <transition type="external" event="succeeded" target="WaitSkill_EXECUTION"/>
             <transition type="external" event="preempted" target="preempted">
-                <qt:editorinfo localGeometry="198.68;6.54"/>
+                <qt:editorinfo localGeometry="198.71;-0.04"/>
             </transition>
             <transition type="external" event="aborted" target="aborted">
                 <qt:editorinfo localGeometry="-197.62;-0.01"/>
@@ -34,10 +35,10 @@
             <qt:editorinfo scenegeometry="666.02;486.68;529.91;459.68;234.38;100" geometry="247.06;251.29;-136.11;-27;234.38;100"/>
             <transition type="external" event="succeeded" target="WaitSkill_ANALYSIS"/>
             <transition type="external" event="preempted" target="preempted">
-                <qt:editorinfo localGeometry="130.98;5.39"/>
+                <qt:editorinfo localGeometry="198.70;-5.08"/>
             </transition>
             <transition type="external" event="aborted" target="aborted">
-                <qt:editorinfo localGeometry="-197.61;5.68"/>
+                <qt:editorinfo localGeometry="-197.63;5.68"/>
             </transition>
             <datamodel>
                 <data id="stage" expr="execution"/>
@@ -45,12 +46,16 @@
         </state>
         <state id="WaitSkill_ANALYSIS">
             <qt:editorinfo scenegeometry="666.32;643.49;538.63;616.49;216.92;100" geometry="247.36;408.10;-127.69;-27;216.92;100"/>
-            <transition type="external" event="aborted" target="aborted"/>
+            <transition type="external" event="aborted" target="aborted">
+                <qt:editorinfo localGeometry="-197.62;0" movePoint="10.70;-17.13"/>
+            </transition>
             <transition type="external" event="succeeded" target="succeeded"/>
-            <transition type="external" event="preempted" target="preempted"/>
             <datamodel>
                 <data id="stage" expr="analysis"/>
             </datamodel>
+            <transition type="external" event="preempted" target="preempted">
+                <qt:editorinfo localGeometry="100.48;0" movePoint="9.63;10.71" startTargetFactors="95.28;53"/>
+            </transition>
         </state>
         <final id="aborted">
             <qt:editorinfo scenegeometry="449.47;748.74;429.47;728.74;40;40" geometry="30.51;513.35;-20;-20;40;40"/>
