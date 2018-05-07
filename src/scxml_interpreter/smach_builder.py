@@ -4,9 +4,8 @@ from skill_provider import SkillProvider
 import smach
 import ast
 
-def convert_datamodel_to_userdata(*args):
-    print(args)
-    for data_id,data_value in args:
+def convert_datamodel_to_userdata(ud, initial_state, *args):
+    for data_id,data_value in args[0].iteritems():
         ud[data_id] = ast.literal_eval(data_value) 
 
 class SmachBuilder():
@@ -22,8 +21,11 @@ class SmachBuilder():
         with self.root_SM:
             for child_state in rootSkeleton.states:
                 self.root_SM.add(child_state.id, self.states_instances[child_state.id], child_state.transitions)
-        self.root_SM.register_start_cb(convert_datamodel_to_userdata,rootSkeleton.data)
-        self.root_SM.set_initial_state([rootSkeleton.initial_state_id])
+                #for keys in self.states_instances[child_state.id].get_registered_output_keys() + self.states_instances[child_state.id].get_registered_input_keys():
+                    #self.root_SM.register_io_keys(keys)
+        if(len(rootSkeleton.data)>0):
+            self.root_SM.register_start_cb(convert_datamodel_to_userdata,[rootSkeleton.data])
+        self.root_SM.set_initial_state([rootSkeleton.initial_state_id], smach.UserData())
         return self.root_SM
     
     def create_all_coumpound_states(self):
@@ -39,8 +41,13 @@ class SmachBuilder():
         with state:
             for child_state in stateSkeleton.states:
                 state.add(child_state.id, self.states_instances[child_state.id], child_state.transitions)
-        state.set_initial_state([stateSkeleton.initial_state_id])   
-        state.register_start_cb(convert_datamodel_to_userdata,[stateSkeleton.data])  
+                ##Register IO Keys
+                #for keys in self.states_instances[child_state.id].get_registered_output_keys() + self.states_instances[child_state.id].get_registered_input_keys():
+                    #state.register_io_keys(keys)
+                    
+        state.set_initial_state([stateSkeleton.initial_state_id], smach.UserData())
+        if(len(stateSkeleton.data)>0):
+            state.register_start_cb(convert_datamodel_to_userdata,[stateSkeleton.data])  
         return stateSkeleton.id, state
     
     def create_all_simple_states(self):
@@ -53,7 +60,6 @@ class SmachBuilder():
     def create_simple_state(self, stateSkeleton):
         #PROVIDER
         state = self.skill_provider.load("WaitSkill",stateSkeleton.id)
-        #state = smach.State()
         outcomes = list(state.get_registered_outcomes())
         for outcome in outcomes:
             if not(outcome in stateSkeleton.get_outcomes()):
@@ -66,6 +72,8 @@ class SmachBuilder():
         return stateSkeleton.id, state
     
     def build_state_machine(self):
+        
+        
         simplestates = self.create_all_simple_states()
         self.states_instances = simplestates
         compoundstates = self.create_all_coumpound_states()
@@ -73,28 +81,3 @@ class SmachBuilder():
         self.states_instances.update(states_instances)
         return self.create_root_state_machine()
         
-    
-            
-            
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

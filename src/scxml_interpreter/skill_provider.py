@@ -28,7 +28,6 @@ class SkillProvider():
         self.package = package
 
     def load(self, module, name):
-        
         try:
             module = self.package + "." + module
             if(module in sys.modules):
@@ -39,7 +38,6 @@ class SkillProvider():
             rospy.logerr('[SCXML Interpreter] Error in the "%s" file (pkg %s) : %s'%(module, self.package, str(ex)))
             print('[SCXML Interpreter] Error in the "%s" file (pkg %s) : %s'%(module, self.package, str(ex)))
             raise Exception(ex)
-        print(module_ref)
         try:
             state_instance = module_ref.__getattribute__(name)()
         except Exception as ex:
