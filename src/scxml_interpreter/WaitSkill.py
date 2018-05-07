@@ -8,7 +8,7 @@ import actionlib
 
 class WaitSkill_SETUP(smach.State):
     def __init__(self, outcomes=["preempted","aborted","succeeded"], io_keys=["actionName","actionGoal","actionType","actionResult"]):
-        smach.State.__init__(self, outcomes, io_keys)
+        smach.State.__init__(self, outcomes, io_keys=io_keys)
         
     def load_type(self, type):
         pkg = type[:type.find('/',0,len(type))]
@@ -17,7 +17,7 @@ class WaitSkill_SETUP(smach.State):
             module_ref = importlib.import_module('.msg', pkg)
         except Exception as e:
             print(str(e))
-        type_instance = module_ref.__getattribute__(module+"Action")()
+        type_instance = module_ref.__getattribute__(module+"Action")
         goal_instance = module_ref.__getattribute__(module+"Goal")()
         result_instance = module_ref.__getattribute__(module+"Result")()
         return type_instance, goal_instance, result_instance
@@ -38,7 +38,7 @@ class WaitSkill_SETUP(smach.State):
 
 class WaitSkill_EXECUTION(smach.State):
     def __init__(self, outcomes=["preempted","aborted","succeeded"], io_keys=["actionName","actionGoal","actionType","actionResult"]):
-        smach.State.__init__(self, outcomes, io_keys)
+        smach.State.__init__(self, outcomes, io_keys=io_keys)
         
         
     def execute(self, ud):
@@ -50,7 +50,7 @@ class WaitSkill_EXECUTION(smach.State):
 
 class WaitSkill_ANALYSIS(smach.State):
     def __init__(self, outcomes=["preempted","aborted","succeeded"], io_keys=["actionName","actionGoal","actionType","actionResult"]):
-        smach.State.__init__(self, outcomes, io_keys)
+        smach.State.__init__(self, outcomes, io_keys=io_keys)
         
         
     def execute(self, ud):

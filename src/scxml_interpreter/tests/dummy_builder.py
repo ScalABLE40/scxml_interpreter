@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import rospy
 from scxml_interpreter.skeleton_class import *
 from scxml_interpreter.smach_builder import SmachBuilder
 from scxml_interpreter.skill_provider import SkillProvider
@@ -13,8 +14,8 @@ def dummy_filler():
     WaitAnalysisSkel = SimpleStateSkeleton("WaitSkill_ANALYSIS",{},{"preempted":"preempted","aborted":"aborted","succeeded":"succeeded"})
      
     ##CompoundFiller
-    WaitSkillSkel = CoumpoundStateSkeleton("WaitSkill",{"actionName":"'/waitskill'","actionGoal":"{'waitTime':2.0}",
-                                                   "actionType":"wait_skill_msgs/WaitSkillAction","actionResult":"{}"},{"preempted":"Final_4","aborted":"Final_4","succeeded":"Final_4"},
+    WaitSkillSkel = CoumpoundStateSkeleton("WaitSkill",{"actionName":"'/WaitSkill'","actionGoal":"{'waitTime':2.0}",
+                                                   "actionType":"'wait_skill_msgs/WaitSkillAction'","actionResult":"{}"},{"preempted":"Final_4","aborted":"Final_4","succeeded":"Final_4"},
                                            [WaitSetupSkel,WaitExecuteSkel,WaitAnalysisSkel], "WaitSkill_SETUP")
     
     ##RootFiller
@@ -28,6 +29,9 @@ def dummy_filler():
     SCXMLSkel.rootState = RootStateSkel
     return SCXMLSkel
      
+     
+     
+rospy.init_node("test_scxml_interpreter")
 Skel = dummy_filler()
 Provider = SkillProvider("scxml_interpreter")
 builder = SmachBuilder(Skel,Provider)
