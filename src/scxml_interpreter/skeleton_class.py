@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 class SimpleStateSkeleton(object):
     def __init__(self, id, data={}, transitions={}):
         self.id = id
@@ -8,8 +9,11 @@ class SimpleStateSkeleton(object):
         
     def get_outcomes(self):
         return list(self.transitions.keys())
+    
+    def __str__(self):
+        return ("SimpleStateSkeleton(\nid=%s\ndata=%stransitions=%s\n)"%(str(self.id),str(self.data),str(self.transitions)))
         
-class CoumpoundStateSkeleton(object):
+class CompoundStateSkeleton(object):
     def __init__(self, id, data={}, transitions={}, states=[], initial_state_id=""):
         self.id = id
         self.data = data
@@ -24,7 +28,14 @@ class CoumpoundStateSkeleton(object):
         if(outcome in self.transitions):
             return self.transitions[outcome]
         else:
-            return None ##TODO return proper error code
+            return None ##TODO return proper error code      
+    def __str__(self):
+        state_print = ""
+        for state in self.states:
+            state_print =  state_print + '  ' + state.id + '\n'
+        return ("CompoundStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\n)"%(
+            str(self.id),str(self.data),str(self.transitions),str(state_print),str(self.initial_state_id))
+        )
 
 class RootStateSkeleton(object):
     def __init__(self, initial_state_id="", data={}, final_states=[], states=[]):
@@ -33,9 +44,31 @@ class RootStateSkeleton(object):
         self.final_states = final_states
         self.states = states
         
+    def __str__(self):
+        state_print = ""
+        for state in self.states:
+            state_print =  state_print + '  ' + state.id + '\n'
+        return ("RootStateSkeleton(\ninitial_state_id=%s\ndata=%s\nfinal_states=%s\nstates=[\n%s]\n)"%(
+            str(self.initial_state_id),str(self.data),str(self.final_states),str(state_print))
+        )
+        
 class SCXMLSkeleton(object):
     def __init__(self):
         self.simpleStates = []
-        self.coumpoundStates = []
+        self.compoundStates = []
         self.rootState = None
+        
+    def debug_print(self):
+        return str(self)
+        
+    def __str__(self):
+        str_print = ""
+        for state in self.simpleStates:
+            str_print = str_print + str(state) + "\n"
+        for state in self.compoundStates:
+            str_print = str_print + str(state) + "\n"
+        str_print = str_print + str(self.rootState)
+        return str_print
+            
+        
         

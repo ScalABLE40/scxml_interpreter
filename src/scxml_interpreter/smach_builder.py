@@ -28,14 +28,14 @@ class SmachBuilder():
         self.root_SM.set_initial_state([rootSkeleton.initial_state_id], smach.UserData())
         return self.root_SM
     
-    def create_all_coumpound_states(self):
+    def create_all_compound_states(self):
         states = {}
-        for stateSkeleton in self.skeleton.coumpoundStates:
-            id, state = self.create_coumpound_state(stateSkeleton)
+        for stateSkeleton in self.skeleton.compoundStates:
+            id, state = self.create_compound_state(stateSkeleton)
             states[id] = state
         return states
     
-    def create_coumpound_state(self, stateSkeleton):
+    def create_compound_state(self, stateSkeleton):
         #PROVIDER 
         state = smach.StateMachine(stateSkeleton.get_outcomes())
         with state:
@@ -76,7 +76,7 @@ class SmachBuilder():
         
         simplestates = self.create_all_simple_states()
         self.states_instances = simplestates
-        compoundstates = self.create_all_coumpound_states()
+        compoundstates = self.create_all_compound_states()
         states_instances = compoundstates.copy()
         self.states_instances.update(states_instances)
         return self.create_root_state_machine()

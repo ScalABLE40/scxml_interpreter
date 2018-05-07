@@ -14,7 +14,7 @@ def dummy_filler():
     WaitAnalysisSkel = SimpleStateSkeleton("WaitSkill_ANALYSIS",{},{"preempted":"preempted","aborted":"aborted","succeeded":"succeeded"})
      
     ##CompoundFiller
-    WaitSkillSkel = CoumpoundStateSkeleton("WaitSkill",{"actionName":"'/WaitSkill'","actionGoal":"{'waitTime':2.0}",
+    WaitSkillSkel = CompoundStateSkeleton("WaitSkill",{"actionName":"'/WaitSkill'","actionGoal":"{'waitTime':2.0}",
                                                    "actionType":"'wait_skill_msgs/WaitSkillAction'","actionResult":"{}"},{"preempted":"Final_4","aborted":"Final_4","succeeded":"Final_4"},
                                            [WaitSetupSkel,WaitExecuteSkel,WaitAnalysisSkel], "WaitSkill_SETUP")
     
@@ -25,7 +25,7 @@ def dummy_filler():
     SCXMLSkel.simpleStates.append(WaitSetupSkel)
     SCXMLSkel.simpleStates.append(WaitExecuteSkel)
     SCXMLSkel.simpleStates.append(WaitAnalysisSkel)
-    SCXMLSkel.coumpoundStates.append(WaitSkillSkel)
+    SCXMLSkel.compoundStates.append(WaitSkillSkel)
     SCXMLSkel.rootState = RootStateSkel
     return SCXMLSkel
      
@@ -33,8 +33,10 @@ def dummy_filler():
      
 rospy.init_node("test_scxml_interpreter")
 Skel = dummy_filler()
+print(Skel)
 Provider = SkillProvider("scxml_interpreter")
 builder = SmachBuilder(Skel,Provider)
 SM = builder.build_state_machine()
-SM.execute()
+
+#SM.execute()
             
