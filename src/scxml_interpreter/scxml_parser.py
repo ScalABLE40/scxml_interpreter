@@ -1,20 +1,4 @@
 #!/usr/bin/env python
-#
-# Copyright 2015 Airbus
-# Copyright 2017 Fraunhofer Institute for Manufacturing Engineering and Automation (IPA)
-#
-# Licensed under the A(object)pache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 
 import rospy
 import re
@@ -26,6 +10,7 @@ import smach
 import sys
 from os import path
 import os
+from scxml_interpreter.skeleton_class import *
 
 class SCXMLInterpreter:
     def __init__(self, scxml_file):
@@ -43,173 +28,152 @@ class SCXMLInterpreter:
         try:
 ##file open  and file check if the file is scxml or not####
             if os.path.splitext(scxml_file)[1] == ".scxml":
-
                 file_ = open(scxml_file).read()
-                file_ = re.sub(' xmlns="[^"]+"', '', file_, count=1)
+                file_ = re.sub(' xmlns="[^"]+"', '', file_, count=1)              
                 self.root = etree.fromstring(file_)
-                self.hierarchial_skeleton()
+                self.root_skeleton(self.root)#TODO to have seperatee function
         except ParseError as ex:
             rospy.logerr(ex)
             rospy.logerr('parsing is not correct is not SCXML')
 
 
-    def skeleton_compoundstate(self,root):
-        root=self.root
+#########creating all the compound states in the scxml######
+    def skeleton_all_compoundstates(self):
+        states_=[]
+        for node in self.compoundstates_:
+            if(node is not None):
+                states_.append(self.skeleton_compoundstate(node))
+        return node
+######Each compound state provides all info state,transitions######
+    def skeleton_compoundstate(self,node):
+        states=[]
+        node_id_compund=node.attrib.get('id')
+        initial=node.find('./initial/transition').attrib.get('target')
+        if(node_id_compund is not None):
+            transition=self.get_transition(node)
+            datamodel=self.get_datamodel(node)
+        else:
+            rospy.logerr("[SCXML Interpreter] No ID found!!!!")
+        for state in node.findall('./state'):
+            test=state.attrib.get('id')
+            states.append(test)
+        skeleton = CompoundStateSkeleton(node_id_compund,datamodel, transition,states,initial)
+        return skeleton
+
+#########creating all the simple states in the scxml######
+    def skeleton_all_simplestates(self):
+      states=[]
+      for node in self.simplestates_:
+            if(node is not None):
+                states.append(self.skeleton_simplestate(node))
+      return states
+######Each simple state provides all info state,transitions######
+    def skeleton_simplestate(self,node):
+        node_id=node.attrib.get('id')
+        if(node_id is not None):
+            transition=self.get_transition(node)
+            datamodel=self.get_datamodel(node)
+        skeleton = SimpleStateSkeleton(node_id,datamodel,transition)
+        return skeleton
+
+#######transitions details for all states###############
+    def get_transition(self,current_state):
+        current=current_state.attrib.get('id')
         transitions_={}
-        outcomes_=[]
-        compound_traget=[]
-        compoundstates=[]
-        matches=[]
+        target=[]
+        if(current is not None):
+            for transition in current_state.findall("transition"):
+                event = transition.attrib.get('event')
+                if(event is None):
+                    rospy.logerr("[SCXML Interpreter] No Transition Event for %s !!!!")
+                    return
+                target_state = transition.attrib.get('target')
+                if(target_state is None):
+                    rospy.logerr("[SCXML Interpreter] No Transition Target for %s !!!!" )
+                    return
+                target.append(target_state)
+                transitions_[event] = target_state
+        return transitions_
+
+########datamodels and data for all state#############
+    def get_datamodel(self,current_data):
         datamodel_ = {}
-        for states in self.root.findall('.//state'):
-            if(states is not None):
-                cstate=states.attrib.get('id')
-                compoundstates.append(cstate)
-            for stat in compoundstates:
-                for state in self.compoundstates_:
-                    if(state is not None and stat is not None):
-                        if(state==stat):
-                            matches.append(state)
-###Get the event,target,data of datamodel fro the states which are only compound####
-                            for cstates in self.root.findall(".//state[@id='"+str(stat)+"']"):
-                                if(cstates is not None):
-                                    for transition in cstates.findall("transition"):
-                                        event = transition.attrib.get('event')
-                                        if(event is None):
-                                            rospy.logerr("[SCXML Interpreter] No Transition Event for %s !!!!")
-                                            return
-                                        target_state = transition.attrib.get('target')
-                                        if(target_state is None):
-                                            rospy.logerr("[SCXML Interpreter] No Transition Target for %s !!!!" )
-                                            return
-                                        compound_traget.append(target_state)
-                                        transitions_[event] = target_state
+        for data in current_data.findall('./datamodel/data'):
+            if( data is not None):
+                data_ID = data.attrib['id']
+                if('expr' in data.attrib):
+                    data_expr = data.attrib['expr']
+                else:
+                    rospy.logwarn('No datamodel presnt')
+                datamodel_[data_ID] = data_expr
+            else:
+                rospy.logerr("[SCXML Interpreter] Data is empty")
+        return datamodel_
+########final state#############
+    def get_final_states_id(self):
+        final_states = self.root.findall('./final')
+        final_states_id = []
+        if(len(final_states) == 0):
+            rospy.logerr("[SCXML Interpreter] No final State found for the state")
+            return None
+        for state in final_states:
+            final_id = state.attrib.get('id')
+            if(final_id == None):
+                rospy.logerr("[SCXML Interpreter] No id for the final state ")
+            else:
+                final_states_id.append(final_id)
+        return final_states_id
 
-##########Datamodel and data########################
-                                    for data in cstates.findall('./datamodel/data'):
-                                        if( data is not None):
-                                            data_IDcompund = data.attrib['id']
-                                            if('expr' in data.attrib):
-                                                data_expr = data.attrib['expr']
-                                            else:
-                                                rospy.logwarn('no datamodel')
-                                            datamodel_[data_IDcompund] = data_expr
-                                        else:
-                                            rospy.logerr("[SCXML Interpreter] Data is empty")
-                                else:
-                                    rospy.logerr("[SCXML Interpreter] could not find the matching compund state ID ")
-
-        rospy.loginfo('data id %s'%datamodel_)
-        rospy.loginfo('compound state  transitions%s'%transitions_)
-
-
-    def skeleton_simplestate(self,root):
-        root=self.root
-        transitionssimple_={}
-        outcomes_=[]
-        traget=[]
-        simstates=[]
-        matches=[]
-        datamodel_ = {}
-        for simplestates in self.root.findall('.//state'):
-            if(simplestates is not None):
-                sstate=simplestates.attrib.get('id')
-                simstates.append(sstate)
-            for stat in simstates:
-                for state in self.simplestates_:
-##check if the states which has all states is equal to the list of simple states###
-
-                    if(state==stat):
-                        matches.append(state)
-###Get the event,target,data of datamodel fro the states which are only simple####
-
-                        for sstates in self.root.findall(".//state[@id='"+str(stat)+"']"):
-                            if(sstates is not None):
-                                for transition in sstates.findall("transition"):
-                                    event = transition.attrib.get('event')
-                                    if(event is None):
-                                        rospy.logerr("[SCXML Interpreter] No Transition Event for %s !!!!" % ID)
-                                        return
-                                    target_simplestate = transition.attrib.get('target')
-                                    if(target_simplestate is None):
-                                        rospy.logerr("[SCXML Interpreter] No Transition Target for %s !!!!" % ID)
-                                        return
-                                    transitionssimple_[event] = target_simplestate
-##########Datamodel and data########################
-                                for data in sstates.findall('./datamodel/data'):
-                                    if(data is not None):
-                                        data_ID = data.attrib['id']
-                                        if('expr' in data.attrib):
-                                            data_expr = data.attrib['expr']
-                                        else:
-                                            rospy.logwarn('no datamodel')
-                                        datamodel_[data_ID] = data_expr
-                                    else:
-                                        rospy.logerr("[SCXML Interpreter] Data is empty")
-                            else:
-                                rospy.logerr("[SCXML Interpreter] could not find the matching simple state ID ")
-        rospy.loginfo('data id %s'%datamodel_)
-        rospy.loginfo('simple state transition %s'%transitionssimple_)
-
-
-    def hierarchial_skeleton(self):
+    def root_skeleton(self,root):
         root=self.root
         self.current_states=[]
-        initial=self.root.attrib.get('initial')
-        rospy.loginfo('node is  %s'%initial)
-        self._atomic_state_list = []
-        self._parent_list=[]
         self.allstates=[]
+        states=[]
+        initial=root.attrib.get('initial')
         if(initial is not None):
-            for state in self.root.findall('.//state'):
+            for state in root.findall('.//state'):
                 for init in state.findall('./initial/transition'):
                     init_target=init.attrib.get('target')
                     event = init.attrib.get('event')
-                    rospy.loginfo('init tagert %s'%init_target)
-                    rospy.loginfo('event  %s'%event)
-
+###check the inital state and the check the state is compound or simple state####
             for node in self.root.findall('.//state'):
                 ID=node.attrib.get('id')
+                for transition in node.findall('.//transition'):
+                    target_state=transition.attrib.get('target')
+                    self.allstates.append(target_state)
+            for node in self.root.findall('state'):
+                ID=node.attrib.get('id')
+                states.append(ID)
+            self.get_compundstates()
+            self.get_simplestates()
 
-###check the inital state and the check the state is compound or simple state####
+        else:
+            rospy.logerr("[SCXML Interpreter] could not find initial state")
+        final_states=self.get_final_states_id()
+        data=self.get_datamodel(root)
+        skeleton=RootStateSkeleton(initial,data,final_states,states)
+        return skeleton
 
-                if(initial==ID):
-                    self.start_of_State=initial
-                    if(node.find('./state') is not None  ):
-                        node_cmpnd=node.attrib.get('id')
-                        self.compoundstates_.append(node_cmpnd)
-                        self.skeleton_compoundstate(root)
-                    else:
-                        node_simple=node.attrib.get('id')
-                        self.simplestates_.append(node_simple)
-                        self.skeleton_simplestate(root)
-            for transition in self.root.findall('.//transition'):
-                target_state=transition.attrib.get('target')
-                self.allstates.append(target_state)
-            for node in self.root.findall('.//state'):
-                node_state=node.attrib.get('id')
-
-####checking if the target and the state is same if it is same checking if it simple or compound state####
-
-                for states in self.allstates:
-                    if(node_state==states):
-                        if(node.find('./state') is not None  ):
-                            node_cmpnd=node.attrib.get('id')
-                            self.compoundstates_.append(node_cmpnd)
-                            rospy.loginfo('Compound State %s'%node_cmpnd)
-                            self.skeleton_compoundstate(root)
-                        else:
-                            node_simple=node.attrib.get('id')
-                            self.simplestates_.append(node_simple)
-                            rospy.loginfo('Simple State%s'%node_simple)
-                            self.skeleton_simplestate(root)
+ ####get states#######
+    def get_compundstates(self):
+        compoundstates=[]
+        for node in self.root.findall('.//state'):
+            node_state=node.attrib.get('id')
+            if(node.find('./state') is not None):
+                self.node_compound=node.attrib.get('id')
+                self.compoundstates_.append(node)
+        self.skeleton_all_compoundstates()
 
 
-
-
-
-
-
+    def get_simplestates(self):
+        simplestates=[]
+        for node in self.root.findall('.//state'):
+            node_state=node.attrib.get('id')
+            if(node.find('./state') is  None  ):
+                self.node_simple=node.attrib.get('id')
+                self.simplestates_.append(node)
+                simplestates.append(self.node_simple)
+        self.skeleton_all_simplestates()
 
 
 
