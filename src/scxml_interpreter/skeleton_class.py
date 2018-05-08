@@ -11,7 +11,7 @@ class SimpleStateSkeleton(object):
         return list(self.transitions.keys())
     
     def __str__(self):
-        return ("SimpleStateSkeleton(\nid=%s\ndata=%stransitions=%s\n)"%(str(self.id),str(self.data),str(self.transitions)))
+        return ("SimpleStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\n)"%(str(self.id),str(self.data),str(self.transitions)))
         
 class CompoundStateSkeleton(object):
     def __init__(self, id, data={}, transitions={}, states=[], initial_state_id=""):
@@ -32,7 +32,15 @@ class CompoundStateSkeleton(object):
     def __str__(self):
         state_print = ""
         for state in self.states:
-            state_print =  state_print + '  ' + state.id + '\n'
+            try:
+                state_print =  state_print + '  ' + state.id + '\n'
+            except AttributeError:
+                pass
+            try:
+                state_print =  state_print + '  ' + state + '\n'
+            except AttributeError:
+                pass
+
         return ("CompoundStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\n)"%(
             str(self.id),str(self.data),str(self.transitions),str(state_print),str(self.initial_state_id))
         )
@@ -47,8 +55,16 @@ class RootStateSkeleton(object):
     def __str__(self):
         state_print = ""
         for state in self.states:
-            state_print =  state_print + '  ' + state.id + '\n'
-        return ("RootStateSkeleton(\ninitial_state_id=%s\ndata=%s\nfinal_states=%s\nstates=[\n%s]\n)"%(
+            try:
+                state_print =  state_print + '  ' + state.id + '\n'
+            except AttributeError:
+                pass
+            try:
+                state_print =  state_print + '  ' + state + '\n'
+            except AttributeError:
+                pass
+
+        return ("RootStateSkeleton(\ninitial_state_id=%s\ndata=%s\nfinal_states=%s\nstates=[\n%s])"%(
             str(self.initial_state_id),str(self.data),str(self.final_states),str(state_print))
         )
         
