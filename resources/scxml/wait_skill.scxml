@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" name="generic_skill" qt:editorversion="4.4.1" initial="WaitSkill">
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" name="generic_skill" qt:editorversion="4.6.1" initial="WaitSkill">
     <qt:editorinfo initialGeometry="633.86;79.37;-20;-20;40;40"/>
     <state id="WaitSkill">
         <qt:editorinfo scenegeometry="418.96;235.39;408.39;143.22;477.41;660.01" geometry="418.96;235.39;-10.57;-92.17;477.41;660.01"/>
@@ -47,14 +47,14 @@
         <state id="WaitSkill_ANALYSIS">
             <qt:editorinfo scenegeometry="666.32;643.49;538.63;616.49;216.92;100" geometry="247.36;408.10;-127.69;-27;216.92;100"/>
             <transition type="external" event="aborted" target="aborted">
-                <qt:editorinfo movePoint="10.70;-17.13" localGeometry="-197.62;0"/>
+                <qt:editorinfo localGeometry="-197.62;0" movePoint="10.70;-17.13"/>
             </transition>
             <transition type="external" event="succeeded" target="succeeded"/>
             <datamodel>
                 <data id="stage" expr="analysis"/>
             </datamodel>
             <transition type="external" event="preempted" target="preempted">
-                <qt:editorinfo movePoint="9.63;10.71" startTargetFactors="95.28;53" localGeometry="100.49;0"/>
+                <qt:editorinfo localGeometry="100.48;0" movePoint="9.63;10.71" startTargetFactors="95.28;53"/>
             </transition>
         </state>
         <final id="aborted">
