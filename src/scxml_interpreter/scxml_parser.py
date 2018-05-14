@@ -12,14 +12,15 @@ from os import path
 import os
 from scxml_interpreter.skeleton_class import *
 
-class SCXMLInterpreter:
-    def __init__(self, scxml_file):
+class SCXMLParser:
+    def __init__(self):
         self.isfile=True
         self.simplestates_=[]
         self.compoundstates_=[]
         self.finalstates_=[]
         preprocess_mapping = {}
 ##pasring the file correctly####
+    def parcing_scxml(self,scxml_file):
         try:
             ParseError = etree.ParseError
         except ImportError:
@@ -31,12 +32,12 @@ class SCXMLInterpreter:
                 file_ = open(scxml_file).read()
                 file_ = re.sub(' xmlns="[^"]+"', '', file_, count=1)              
                 self.root = etree.fromstring(file_)
-                self.root_skeleton(self.root)#TODO to have seperatee function
+                self.root_skeleton(self.root)
         except ParseError as ex:
             rospy.logerr(ex)
             rospy.logerr('parsing is not correct is not SCXML')
 
-
+        return self.root
 #########creating all the compound states in the scxml######
     def skeleton_all_compoundstates(self):
         states_=[]
@@ -66,7 +67,7 @@ class SCXMLInterpreter:
       for node in self.simplestates_:
             if(node is not None):
                 states.append(self.skeleton_simplestate(node))
-      return states
+      return node
 ######Each simple state provides all info state,transitions######
     def skeleton_simplestate(self,node):
         node_id=node.attrib.get('id')
