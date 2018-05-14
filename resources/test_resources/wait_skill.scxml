@@ -54,7 +54,7 @@
                 <data id="stage" expr="analysis"/>
             </datamodel>
             <transition type="external" event="preempted" target="preempted">
-                <qt:editorinfo movePoint="9.63;10.71" startTargetFactors="95.28;53" localGeometry="100.49;0"/>
+                <qt:editorinfo movePoint="9.63;10.71" localGeometry="100.49;0" startTargetFactors="95.28;53"/>
             </transition>
         </state>
         <final id="aborted">

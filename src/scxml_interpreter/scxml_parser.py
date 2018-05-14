@@ -12,14 +12,16 @@ from os import path
 import os
 from scxml_interpreter.skeleton_class import *
 
-class SCXMLInterpreter:
-    def __init__(self, scxml_file):
+
+class SCXMLParser:
+    def __init__(self):
         self.isfile=True
         self.simplestates_=[]
         self.compoundstates_=[]
         self.finalstates_=[]
         preprocess_mapping = {}
 ##pasring the file correctly####
+    def parcing_scxml(self,scxml_file):
         try:
             ParseError = etree.ParseError
         except ImportError:
@@ -31,12 +33,12 @@ class SCXMLInterpreter:
                 file_ = open(scxml_file).read()
                 file_ = re.sub(' xmlns="[^"]+"', '', file_, count=1)              
                 self.root = etree.fromstring(file_)
-                self.root_skeleton(self.root)#TODO to have seperatee function
+                self.root_skeleton(self.root)
         except ParseError as ex:
             rospy.logerr(ex)
             rospy.logerr('parsing is not correct is not SCXML')
 
-
+        return self.root
 #########creating all the compound states in the scxml######
     def skeleton_all_compoundstates(self):
         states_=[]
@@ -44,9 +46,10 @@ class SCXMLInterpreter:
             if(node is not None):
                 states_.append(self.skeleton_compoundstate(node))
         return node
-######Each compound state provides all info state,transitions######
+######Each compound stae provides all info state,transitions######
     def skeleton_compoundstate(self,node):
         states=[]
+        print(node)
         node_id_compund=node.attrib.get('id')
         initial=node.find('./initial/transition').attrib.get('target')
         if(node_id_compund is not None):
@@ -58,6 +61,7 @@ class SCXMLInterpreter:
             test=state.attrib.get('id')
             states.append(test)
         skeleton = CompoundStateSkeleton(node_id_compund,datamodel, transition,states,initial)
+        print(skeleton)
         return skeleton
 
 #########creating all the simple states in the scxml######
@@ -66,7 +70,7 @@ class SCXMLInterpreter:
       for node in self.simplestates_:
             if(node is not None):
                 states.append(self.skeleton_simplestate(node))
-      return states
+            return node
 ######Each simple state provides all info state,transitions######
     def skeleton_simplestate(self,node):
         node_id=node.attrib.get('id')
@@ -74,6 +78,7 @@ class SCXMLInterpreter:
             transition=self.get_transition(node)
             datamodel=self.get_datamodel(node)
         skeleton = SimpleStateSkeleton(node_id,datamodel,transition)
+        print(skeleton)
         return skeleton
 
 #######transitions details for all states###############
@@ -109,6 +114,7 @@ class SCXMLInterpreter:
             else:
                 rospy.logerr("[SCXML Interpreter] Data is empty")
         return datamodel_
+
 ########final state#############
     def get_final_states_id(self):
         final_states = self.root.findall('./final')
@@ -127,31 +133,20 @@ class SCXMLInterpreter:
     def root_skeleton(self,root):
         root=self.root
         self.current_states=[]
-        self.allstates=[]
         states=[]
         initial=root.attrib.get('initial')
-        if(initial is not None):
-            for state in root.findall('.//state'):
-                for init in state.findall('./initial/transition'):
-                    init_target=init.attrib.get('target')
-                    event = init.attrib.get('event')
-###check the inital state and the check the state is compound or simple state####
-            for node in self.root.findall('.//state'):
-                ID=node.attrib.get('id')
-                for transition in node.findall('.//transition'):
-                    target_state=transition.attrib.get('target')
-                    self.allstates.append(target_state)
-            for node in self.root.findall('state'):
-                ID=node.attrib.get('id')
-                states.append(ID)
-            self.get_compundstates()
-            self.get_simplestates()
-
-        else:
+        if(initial is None):
             rospy.logerr("[SCXML Interpreter] could not find initial state")
+            #errorcode
+        for node in self.root.findall('state'):
+            ID=node.attrib.get('id')
+            states.append(ID)
+        self.get_compundstates()
+        self.get_simplestates()
         final_states=self.get_final_states_id()
         data=self.get_datamodel(root)
         skeleton=RootStateSkeleton(initial,data,final_states,states)
+        print(skeleton)
         return skeleton
 
  ####get states#######

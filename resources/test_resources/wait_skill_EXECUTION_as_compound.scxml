@@ -18,20 +18,7 @@
         <transition type="external" event="preempted" target="Final_4">
             <qt:editorinfo startTargetFactors="88.91;98.03"/>
         </transition>
-        <state id="WaitSkill_SETUP">
-            <qt:editorinfo scenegeometry="671.23;325.71;553.35;298.71;187.48;100" geometry="252.27;90.32;-117.88;-27;187.48;100"/>
-            <datamodel>
-                <data id="stage" expr="setup"/>
-            </datamodel>
-            <transition type="external" event="succeeded" target="WaitSkill_EXECUTION"/>
-            <transition type="external" event="preempted" target="preempted">
-                <qt:editorinfo localGeometry="198.71;-0.04"/>
-            </transition>
-            <transition type="external" event="aborted" target="aborted">
-                <qt:editorinfo localGeometry="-197.62;-0.01"/>
-            </transition>
-        </state>
-        <state id="WaitSkill_EXECUTION">
+   	<state id="WaitSkill_EXECUTION">
             <qt:editorinfo scenegeometry="666.02;486.68;529.91;459.68;234.38;100" geometry="247.06;251.29;-136.11;-27;234.38;100"/>
             <transition type="external" event="succeeded" target="WaitSkill_ANALYSIS"/>
             <transition type="external" event="preempted" target="preempted">
@@ -42,21 +29,7 @@
             </transition>
             <datamodel>
                 <data id="stage" expr="execution"/>
-            </datamodel>
-        </state>
-        <state id="WaitSkill_ANALYSIS">
-            <qt:editorinfo scenegeometry="666.32;643.49;538.63;616.49;216.92;100" geometry="247.36;408.10;-127.69;-27;216.92;100"/>
-            <transition type="external" event="aborted" target="aborted">
-                <qt:editorinfo movePoint="10.70;-17.13" localGeometry="-197.62;0"/>
-            </transition>
-            <transition type="external" event="succeeded" target="succeeded"/>
-            <datamodel>
-                <data id="stage" expr="analysis"/>
-            </datamodel>
-            <transition type="external" event="preempted" target="preempted">
-                <qt:editorinfo movePoint="9.63;10.71" startTargetFactors="95.28;53" localGeometry="100.49;0"/>
-            </transition>
-        </state>
+            </datamodel>     
         <final id="aborted">
             <qt:editorinfo scenegeometry="449.47;748.74;429.47;728.74;40;40" geometry="30.51;513.35;-20;-20;40;40"/>
         </final>
@@ -73,6 +46,7 @@
             </transition>
         </initial>
     </state>
+</state>
     <final id="Final_4">
         <qt:editorinfo scenegeometry="647.10;912.88;627.10;892.88;40;40" geometry="647.10;912.88;-20;-20;40;40"/>
     </final>
