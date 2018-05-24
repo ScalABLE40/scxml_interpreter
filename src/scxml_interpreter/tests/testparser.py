@@ -4,7 +4,7 @@ import rospy
 import rospkg
 import os
 from scxml_interpreter.scxml_parser import SCXMLParser
-from scxml_interpreter.skeleton_class import RootStateSkeleton,CompoundStateSkeleton,SimpleStateSkeleton
+from scxml_interpreter.skeleton_class import RootStateSkeleton,CompoundStateSkeleton,SimpleStateSkeleton,ParallelStateSkeleton
 import unittest
 import xml.etree.ElementTree as etree
 
@@ -89,6 +89,17 @@ class Testcases(unittest.TestCase):
             skelteoncomp=scxml_parser.skeleton_simplestate(test_simple)
         self.assertEqual(str(skelteoncomp),str(SimpleStateSkeleton("WaitSkill_EXECUTION",{'stage': 'analysis'},
         {"preempted":"preempted","aborted":"aborted","succeeded":"succeeded"})))
+
+    def test_parallelstate(self):
+        pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
+        scxml_file = os.path.join(pkg_path, "resources/scxml/parallel.scxml")
+        scxml_parser = SCXMLParser()
+        SCXMLSkeleton = scxml_parser.parcing_scxml(scxml_file)
+        SCXMLParallel=scxml_parser.get_parallelstates()
+        for test_parallel in SCXMLParallel:
+            skeletonparallel=scxml_parser.skeleton_parallelstate(test_parallel)
+        self.assertEqual(str(skeletonparallel),str(ParallelStateSkeleton("Parallel_2",{'test': '14054067'},{'failed': 'State_7', 'success': 'State_5'},
+        ['State_3','State_4','State_4_Bis'],None,None,({'test': 'Test value :', 'outcome': 'test'}, None))))
 
 if __name__ == "__main__":
     unittest.main()
