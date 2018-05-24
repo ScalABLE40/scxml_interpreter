@@ -2,25 +2,30 @@
 
 
 class SimpleStateSkeleton(object):
-    def __init__(self, id, data={}, transitions={}):
+    def __init__(self, id, data={}, transitions={},onentry=[],onexit=[]):
         self.id = id
         self.data = data
         self.transitions = transitions
+        self.onentry=onentry
+        self.onexit=onexit
+
         
     def get_outcomes(self):
         return list(self.transitions.keys())
-    
+
     def __str__(self):
-        return ("SimpleStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\n)"%(str(self.id),str(self.data),str(self.transitions)))
+        return ("SimpleStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\nonentry=%s\nonexit=%s\n)"%(str(self.id),str(self.data),str(self.transitions),str(self.onentry),str(self.onexit)))
         
 class CompoundStateSkeleton(object):
-    def __init__(self, id, data={}, transitions={}, states=[], initial_state_id=""):
+    def __init__(self, id, data={}, transitions={}, states=[], initial_state_id="",onentry=[],onexit=[]):
         self.id = id
         self.data = data
         self.transitions = transitions
         self.states = states
         self.initial_state_id = initial_state_id
-        
+        self.onentry=onentry
+        self.onexit=onexit
+
     def get_outcomes(self):
         return list(self.transitions.keys())
     
@@ -41,8 +46,42 @@ class CompoundStateSkeleton(object):
             except AttributeError:
                 pass
 
-        return ("CompoundStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\n)"%(
-            str(self.id),str(self.data),str(self.transitions),str(state_print),str(self.initial_state_id))
+        return ("CompoundStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\nonentry=%s\nonexit=%s\n)"%(
+            str(self.id),str(self.data),str(self.transitions),str(state_print),str(self.initial_state_id),str(self.onentry),str(self.onexit))
+        )
+
+class ParallelStateSkeleton(object):
+    def __init__(self, id, data={}, transitions={}, states=[], initial_state_id="",onentry=[],onexit=[]):
+        self.id = id
+        self.data = data
+        self.transitions = transitions
+        self.states = states
+        self.initial_state_id = initial_state_id
+        self.onentry=onentry
+        self.onexit=onexit
+
+    def get_outcomes(self):
+        return list(self.transitions.keys())
+
+    def get_outcome_target(self, outcome):
+        if(outcome in self.transitions):
+            return self.transitions[outcome]
+        else:
+            return None ##TODO return proper error code
+    def __str__(self):
+        state_print = ""
+        for state in self.states:
+            try:
+                state_print =  state_print + '  ' + state.id + '\n'
+            except AttributeError:
+                pass
+            try:
+                state_print =  state_print + '  ' + state + '\n'
+            except AttributeError:
+                pass
+
+        return ("ParallelStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\nonentry=%s\nonexit=%s\n)"%(
+            str(self.id),str(self.data),str(self.transitions),str(state_print),str(self.initial_state_id),str(self.onentry),str(self.onexit))
         )
 
 class RootStateSkeleton(object):
