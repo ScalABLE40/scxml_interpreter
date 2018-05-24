@@ -15,10 +15,10 @@ from scxml_interpreter.skeleton_class import *
 class SCXMLParser:
     def __init__(self):
         self.isfile=True
-        self.simplestates_=[]
-        self.compoundstates_=[]
+        self.simplestates=[]
+        self.compoundstates=[]
         self.finalstates_=[]
-        self.parallelstates_=[]
+        self.parallelstates=[]
         preprocess_mapping = {}
 ##pasring the file correctly####
     def parcing_scxml(self,scxml_file):
@@ -42,7 +42,7 @@ class SCXMLParser:
 #########creating all the compound states in the scxml######
     def skeleton_all_compoundstates(self):
         compoundstates=[]
-        for node in self.compoundstates_:
+        for node in self.compoundstates:
             if(node is not None):
                 compoundstates.append(self.skeleton_compoundstate(node))
         return compoundstates
@@ -69,7 +69,7 @@ class SCXMLParser:
 #########creating all the simple states in the scxml######
     def skeleton_all_simplestates(self):
       simplestates=[]
-      for node in self.simplestates_:
+      for node in self.simplestates:
             if(node is not None):
                 simplestates.append(self.skeleton_simplestate(node))
       return simplestates
@@ -87,7 +87,7 @@ class SCXMLParser:
 ###############Parallel states####################
     def skeleton_all_parallelstates(self):
       parallelstates=[]
-      for node in self.parallelstates_:
+      for node in self.parallelstates:
             if(node is not None):
                 parallelstates.append(self.skeleton_parallelstate(node))
       return parallelstates
@@ -105,7 +105,6 @@ class SCXMLParser:
         for state in node.findall('./state'):
             test=state.attrib.get('id')
             states.append(test)
-
         skeleton = ParallelStateSkeleton(node_id,datamodel, transition,states,initial,onEntry,onExit)
         return skeleton
 
@@ -133,7 +132,6 @@ class SCXMLParser:
             self.get_compundstates()
             self.get_simplestates()
             self.get_parallelstates()
-
         else:
             rospy.logerr("[SCXML Interpreter] could not find initial state")
         final_states=self.get_final_states_id()
@@ -161,6 +159,7 @@ class SCXMLParser:
                 target.append(target_state)
                 transitions_[event] = target_state
         return transitions_
+
 ###Transitions for parallel states#####
     def get_transition_parallel(self,current_state):
        current=current_state.attrib.get('id')
@@ -227,6 +226,7 @@ class SCXMLParser:
             else:
                 rospy.logerr("[SCXML Interpreter] Data is empty")
         return datamodel_
+
 ########final state#############
     def get_final_states_id(self):
         final_states = self.root.findall('./final')
@@ -249,9 +249,9 @@ class SCXMLParser:
             node_state=node.attrib.get('id')
             if(node.find('./state') is not None):
                 self.node_compound=node.attrib.get('id')
-                self.compoundstates_.append(node)
+                self.compoundstates.append(node)
         self.skeleton_all_compoundstates()
-        return self.compoundstates_
+        return self.compoundstates
 
 
     def get_simplestates(self):
@@ -260,10 +260,10 @@ class SCXMLParser:
             node_state=node.attrib.get('id')
             if(node.find('./state') is  None  ):
                 self.node_simple=node.attrib.get('id')
-                self.simplestates_.append(node)
+                self.simplestates.append(node)
                 simplestates.append(self.node_simple)
         self.skeleton_all_simplestates()
-        return self.simplestates_
+        return self.simplestates
 
 
     def get_parallelstates(self):
@@ -271,10 +271,10 @@ class SCXMLParser:
         #rospy.loginfo("parallel %s"%parallelstates)
         for node in self.root.findall('parallel'):
             node_state=node.attrib.get('id')
-            self.parallelstates_.append(node)
+            parallelstates.append(node)
 
         self.skeleton_all_parallelstates()
-        return self.parallelstates_
+        return self.parallelstates
 ###OnEntry####
     def get_on_entry(self, state):
 
