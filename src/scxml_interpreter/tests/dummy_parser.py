@@ -13,4 +13,4 @@ if __name__ == "__main__":
     scxml_file = os.path.join(pkg_path, "resources/scxml/parallel.scxml")
     #if os.path.splitext(scxml_file)[1] == ".scxml":
     interpreter = SCXMLParser()
-    parsing=interpreter.parcing_scxml(scxml_file)
+    parsing=interpreter.parsing_scxml(scxml_file)

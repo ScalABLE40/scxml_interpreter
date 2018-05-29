@@ -20,8 +20,8 @@ class SCXMLParser:
         self.finalstates_=[]
         self.parallelstates=[]
         preprocess_mapping = {}
-##pasring the file correctly####
-    def parcing_scxml(self,scxml_file):
+##parsing the file correctly####
+    def parsing_scxml(self,scxml_file):
         try:
             ParseError = etree.ParseError
         except ImportError:
@@ -50,9 +50,9 @@ class SCXMLParser:
 ######Each compound state provides all info state,transitions######
     def skeleton_compoundstate(self,node):
         states=[]
-        node_id_compund=node.attrib.get('id')
+        node_id_compound=node.attrib.get('id')
         initial=node.find('./initial/transition').attrib.get('target')
-        if(node_id_compund is not None):
+        if(node_id_compound is not None):
             transition=self.get_transition(node)
             datamodel=self.get_datamodel(node)
             onEntry = self.get_on_entry(node)
@@ -63,7 +63,7 @@ class SCXMLParser:
         for state in node.findall('./state'):
             test=state.attrib.get('id')
             states.append(test)
-        skeleton = CompoundStateSkeleton(node_id_compund,datamodel, transition,states,initial,onEntry,onExit)
+        skeleton = CompoundStateSkeleton(node_id_compound,datamodel, transition,states,initial,onEntry,onExit)
         return skeleton
 
 #########creating all the simple states in the scxml######
@@ -129,7 +129,7 @@ class SCXMLParser:
             for node in self.root.findall('state'):
                 ID=node.attrib.get('id')
                 states.append(ID)
-            self.get_compundstates()
+            self.get_compoundstates()
             self.get_simplestates()
             self.get_parallelstates()
         else:
@@ -243,7 +243,7 @@ class SCXMLParser:
         return final_states_id
 
  ####get states#######
-    def get_compundstates(self):
+    def get_compoundstates(self):
         compoundstates=[]
         for node in self.root.findall('.//state'):
             node_state=node.attrib.get('id')
