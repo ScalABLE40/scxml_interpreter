@@ -277,10 +277,10 @@ class SCXMLParser:
         return self.parallelstates
 ###OnEntry####
     def get_on_entry(self, state):
-
         if(state.find('onentry') == None):
-            return None
+            return []
         else:
+            '''
             logs = {}
             script = None
             if(state.find('./onentry/script') is not None):
@@ -288,12 +288,15 @@ class SCXMLParser:
 
             for log in state.findall('./onentry/log'):
                 logs[log.attrib['label']] = log.attrib['expr']
-            return logs, script
+            '''
+            return []
+        
 ###OnExit#####
     def get_on_exit(self, state):
         if(state.find('onexit') == None):
-            return None
+            return []
         else:
+            '''
             logs = {}
             script = None
             if(state.find('./onexit/script') is not None):
@@ -301,8 +304,8 @@ class SCXMLParser:
 
             for log in state.findall('./onexit/log'):
                 logs[log.attrib['label']] = log.attrib['expr']
-
-            return logs, script
+            '''
+            return []
 
 
 
