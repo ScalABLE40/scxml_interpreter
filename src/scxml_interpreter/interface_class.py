@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-class SimpleStateSkeleton(object):
+class SimpleStateInterface(object):
     def __init__(self, id, data={}, transitions={},onentry=[],onexit=[]):
         self.id = id
         self.data = data
@@ -14,9 +14,9 @@ class SimpleStateSkeleton(object):
         return list(self.transitions.keys())
 
     def __str__(self):
-        return ("SimpleStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\nonentry=%s\nonexit=%s\n)"%(str(self.id),str(self.data),str(self.transitions),str(self.onentry),str(self.onexit)))
+        return ("SimpleStateInterface(\nid=%s\ndata=%s\ntransitions=%s\nonentry=%s\nonexit=%s\n)"%(str(self.id),str(self.data),str(self.transitions),str(self.onentry),str(self.onexit)))
         
-class CompoundStateSkeleton(object):
+class CompoundStateInterface(object):
     def __init__(self, id, data={}, transitions={}, states=[], initial_state_id="",onentry=[],onexit=[]):
         self.id = id
         self.data = data
@@ -37,20 +37,16 @@ class CompoundStateSkeleton(object):
     def __str__(self):
         state_print = ""
         for state in self.states:
-            try:
+            if(isinstance(state, SimpleStateInterface) or isinstance(state, CompoundStateInterface)):
                 state_print =  state_print + '  ' + state.id + '\n'
-            except AttributeError:
-                pass
-            try:
+            else:
                 state_print =  state_print + '  ' + state + '\n'
-            except AttributeError:
-                pass
 
-        return ("CompoundStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\nonentry=%s\nonexit=%s\n)"%(
+        return ("CompoundStateInterface(\nid=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\nonentry=%s\nonexit=%s\n)"%(
             str(self.id),str(self.data),str(self.transitions),str(state_print),str(self.initial_state_id),str(self.onentry),str(self.onexit))
         )
 
-class ParallelStateSkeleton(object):
+class ParallelStateInterface(object):
     def __init__(self, id, data={}, transitions={}, states=[], initial_state_id="",onentry=[],onexit=[]):
         self.id = id
         self.data = data
@@ -80,11 +76,11 @@ class ParallelStateSkeleton(object):
             except AttributeError:
                 pass
 
-        return ("ParallelStateSkeleton(\nid=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\nonentry=%s\nonexit=%s\n)"%(
+        return ("ParallelStateInterface(\nid=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\nonentry=%s\nonexit=%s\n)"%(
             str(self.id),str(self.data),str(self.transitions),str(state_print),str(self.initial_state_id),str(self.onentry),str(self.onexit))
         )
 
-class RootStateSkeleton(object):
+class RootStateInterface(object):
     def __init__(self, initial_state_id="", data={}, final_states=[], states=[]):
         self.initial_state_id = initial_state_id
         self.data = data
@@ -94,20 +90,16 @@ class RootStateSkeleton(object):
     def __str__(self):
         state_print = ""
         for state in self.states:
-            try:
+            if(isinstance(state, SimpleStateInterface) or isinstance(state, CompoundStateInterface)):
                 state_print =  state_print + '  ' + state.id + '\n'
-            except AttributeError:
-                pass
-            try:
+            else:
                 state_print =  state_print + '  ' + state + '\n'
-            except AttributeError:
-                pass
 
-        return ("RootStateSkeleton(\ninitial_state_id=%s\ndata=%s\nfinal_states=%s\nstates=[\n%s])"%(
+        return ("RootStateInterface(\ninitial_state_id=%s\ndata=%s\nfinal_states=%s\nstates=[\n%s])"%(
             str(self.initial_state_id),str(self.data),str(self.final_states),str(state_print))
         )
         
-class SCXMLSkeleton(object):
+class SCXMLInterface(object):
     def __init__(self):
         self.simpleStates = []
         self.compoundStates = []

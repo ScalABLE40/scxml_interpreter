@@ -10,7 +10,7 @@ import smach
 import sys
 from os import path
 import os
-from scxml_interpreter.skeleton_class import *
+from scxml_interpreter.interface_class import *
 
 class SCXMLParser:
     def __init__(self):
@@ -33,22 +33,22 @@ class SCXMLParser:
                 file_ = open(scxml_file).read()
                 file_ = re.sub(' xmlns="[^"]+"', '', file_, count=1)              
                 self.root = etree.fromstring(file_)
-                self.root_skeleton(self.root)
+                self.root_Interface(self.root)
         except ParseError as ex:
             rospy.logerr(ex)
             rospy.logerr('parsing is not correct is not SCXML')
 
         return self.root
 #########creating all the compound states in the scxml######
-    def skeleton_all_compoundstates(self):
+    def Interface_all_compoundstates(self):
         compoundstates=[]
         for node in self.compoundstates:
             if(node is not None):
-                compoundstates.append(self.skeleton_compoundstate(node))
+                compoundstates.append(self.Interface_compoundstate(node))
         return compoundstates
 
 ######Each compound state provides all info state,transitions######
-    def skeleton_compoundstate(self,node):
+    def Interface_compoundstate(self,node):
         states=[]
         node_id_compound=node.attrib.get('id')
         initial=node.find('./initial/transition').attrib.get('target')
@@ -63,18 +63,18 @@ class SCXMLParser:
         for state in node.findall('./state'):
             test=state.attrib.get('id')
             states.append(test)
-        skeleton = CompoundStateSkeleton(node_id_compound,datamodel, transition,states,initial,onEntry,onExit)
-        return skeleton
+        Interface = CompoundStateInterface(node_id_compound,datamodel, transition,states,initial,onEntry,onExit)
+        return Interface
 
 #########creating all the simple states in the scxml######
-    def skeleton_all_simplestates(self):
+    def Interface_all_simplestates(self):
       simplestates=[]
       for node in self.simplestates:
             if(node is not None):
-                simplestates.append(self.skeleton_simplestate(node))
+                simplestates.append(self.Interface_simplestate(node))
       return simplestates
 ######Each simple state provides all info state,transitions######
-    def skeleton_simplestate(self,node):
+    def Interface_simplestate(self,node):
         node_id=node.attrib.get('id')
         onEntry = self.get_on_entry(node)
         onExit = self.get_on_exit(node)
@@ -82,17 +82,17 @@ class SCXMLParser:
             transition=self.get_transition(node)
             datamodel=self.get_datamodel(node)
 
-        skeleton = SimpleStateSkeleton(node_id,datamodel,transition,onEntry,onExit)
-        return skeleton
+        Interface = SimpleStateInterface(node_id,datamodel,transition,onEntry,onExit)
+        return Interface
 ###############Parallel states####################
-    def skeleton_all_parallelstates(self):
+    def Interface_all_parallelstates(self):
       parallelstates=[]
       for node in self.parallelstates:
             if(node is not None):
-                parallelstates.append(self.skeleton_parallelstate(node))
+                parallelstates.append(self.Interface_parallelstate(node))
       return parallelstates
 
-    def skeleton_parallelstate(self,node):
+    def Interface_parallelstate(self,node):
         states=[]
         node_id=node.attrib.get('id')
         initial=node.find('./initial')
@@ -105,11 +105,11 @@ class SCXMLParser:
         for state in node.findall('./state'):
             test=state.attrib.get('id')
             states.append(test)
-        skeleton = ParallelStateSkeleton(node_id,datamodel, transition,states,initial,onEntry,onExit)
-        return skeleton
+        Interface = ParallelStateInterface(node_id,datamodel, transition,states,initial,onEntry,onExit)
+        return Interface
 
 
-    def root_skeleton(self,root):
+    def root_Interface(self,root):
         root=self.root
         self.current_states=[]
         self.allstates=[]
@@ -136,8 +136,8 @@ class SCXMLParser:
             rospy.logerr("[SCXML Interpreter] could not find initial state")
         final_states=self.get_final_states_id()
         data=self.get_datamodel(root)
-        skeleton=RootStateSkeleton(initial,data,final_states,states)
-        return skeleton
+        Interface=RootStateInterface(initial,data,final_states,states)
+        return Interface
 
 
 #######transitions details for simple and compound states###############
@@ -250,7 +250,7 @@ class SCXMLParser:
             if(node.find('./state') is not None):
                 self.node_compound=node.attrib.get('id')
                 self.compoundstates.append(node)
-        self.skeleton_all_compoundstates()
+        self.Interface_all_compoundstates()
         return self.compoundstates
 
 
@@ -262,7 +262,7 @@ class SCXMLParser:
                 self.node_simple=node.attrib.get('id')
                 self.simplestates.append(node)
                 simplestates.append(self.node_simple)
-        self.skeleton_all_simplestates()
+        self.Interface_all_simplestates()
         return self.simplestates
 
 
@@ -273,7 +273,7 @@ class SCXMLParser:
             node_state=node.attrib.get('id')
             parallelstates.append(node)
 
-        self.skeleton_all_parallelstates()
+        self.Interface_all_parallelstates()
         return self.parallelstates
 ###OnEntry####
     def get_on_entry(self, state):
