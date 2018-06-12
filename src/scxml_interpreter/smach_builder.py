@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from skill_provider import SkillProvider
+from state_provider import SmachStateProvider
 import smach
 import rospy
 import ast
@@ -13,14 +13,14 @@ def convert_datamodel_to_userdata(ud, initial_state, *args):
             ud[data_id] = data_value 
 
 class SmachBuilder():
-    def __init__(self, Interface=None, skill_provider=None):
-        self.Interface = Interface
-        self.skill_provider = skill_provider
+    def __init__(self, interface, provider):
+        self._interface = interface
+        self._provider = provider
         self.root_SM = None
         self.states_instances = {}
         
     def create_root_state_machine(self):
-        rootInterface = self.Interface.rootState
+        rootInterface = self._interface.rootState
         self.root_SM = smach.StateMachine(rootInterface.final_states)
         with self.root_SM:
             for child_state in rootInterface.states:
@@ -34,7 +34,7 @@ class SmachBuilder():
     
     def create_all_compound_states(self):
         states = {}
-        for stateInterface in self.Interface.compoundStates:
+        for stateInterface in self._interface.compoundStates:
             id, state = self.create_compound_state(stateInterface)
             states[id] = state
         return states
@@ -56,7 +56,7 @@ class SmachBuilder():
     
     def create_all_simple_states(self):
         states = {}
-        for stateInterface in self.Interface.simpleStates:
+        for stateInterface in self._interface.simpleStates:
             id, state = self.create_simple_state(stateInterface)
             states[id] = state
         return states
@@ -65,7 +65,7 @@ class SmachBuilder():
     def get_python_state_automatch(self, stateInterface):
             ##Use Auto matched
         matching_states = []
-        for provider in self.skill_provider:
+        for provider in self._provider:
             match_state = provider.get_state(stateInterface.id)
             if(match_state is not None):
                 matching_states.append(match_state)
@@ -85,7 +85,7 @@ class SmachBuilder():
     def get_python_state(self, stateInterface):
         found_state = None
         if("python_state" in stateInterface.data):
-            for provider in self.skill_provider:
+            for provider in self._provider:
                 found_state = provider.get_state(stateInterface.data["python_state"])
                 rospy.logdebug("State '%s' linked to '%s' python state set."%(stateInterface.id, stateInterface.data["python_state"]))
             if found_state == None:
@@ -95,7 +95,7 @@ class SmachBuilder():
             found_state = self.get_python_state_automatch(stateInterface)
         
         if(found_state is not None):
-            if not(isinstance(found_State, smach.State)):
+            if not(isinstance(found_state, smach.State)):
                 ##Not a smachState for the smach  builder
                 raise TypeError("State '%s' linked Python State is not Smach State instances"%(stateInterface.id))
             else:
