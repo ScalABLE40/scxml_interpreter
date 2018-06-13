@@ -15,6 +15,7 @@
   <author email="shruti.subramanian@ipa.fhg.de">Shruti Subramanian</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rostest</build_depend>
   <depend>rospy</depend>
   <depend>smach</depend>
 

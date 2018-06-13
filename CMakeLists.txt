@@ -16,4 +16,8 @@ install(FILES
    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
-catkin_add_nosetests(test)
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  catkin_add_nosetests(tests)
+endif()
+
