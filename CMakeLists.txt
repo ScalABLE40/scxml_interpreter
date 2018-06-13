@@ -11,8 +11,9 @@ catkin_python_setup()
 catkin_package(
   CATKIN_DEPENDS rospy smach
 )
-install(FILES
-   tests/resources
+
+install(DIRECTORY
+   tests/resources/
    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
