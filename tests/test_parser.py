@@ -9,11 +9,11 @@ import unittest
 import xml.etree.ElementTree as etree
 
 
-class Testcases(unittest.TestCase):
+class test_cases(unittest.TestCase):
     def test_rootstate(self):
 
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
-        scxml_file = os.path.join(pkg_path, "resources/scxml/wait_skill.scxml")
+        scxml_file = os.path.join(pkg_path, "resources/wait_skill.scxml")
         scxml_parser = SCXMLParser()
         SCXMLSkeleton = scxml_parser.parsing_scxml(scxml_file)
         SCXMLRootSkeleton = scxml_parser.root_skeleton(SCXMLSkeleton)
@@ -22,7 +22,7 @@ class Testcases(unittest.TestCase):
     def test_compoundstate(self):
 
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
-        scxml_file = os.path.join(pkg_path, "resources/scxml/wait_skill.scxml")
+        scxml_file = os.path.join(pkg_path, "resources/wait_skill.scxml")
         scxml_parser = SCXMLParser()
         SCXMLSkeleton = scxml_parser.parsing_scxml(scxml_file)
         SCXMlgetcompoundstate=scxml_parser.get_compoundstates()
@@ -34,7 +34,7 @@ class Testcases(unittest.TestCase):
     def test_compoundstate1(self):
 
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
-        scxml_file = os.path.join(pkg_path, "resources/scxml/wait_skill.scxml")
+        scxml_file = os.path.join(pkg_path, "resources/wait_skill.scxml")
         scxml_parser = SCXMLParser()
         SCXMLSkeleton = scxml_parser.parsing_scxml(scxml_file)
         SCXMlgetcompoundstate=scxml_parser.get_compoundstates()
@@ -45,7 +45,7 @@ class Testcases(unittest.TestCase):
     def test_simplestate_setup(self):
 
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
-        scxml_file = os.path.join(pkg_path, "resources/test_resources/wait_skill_setup.scxml")
+        scxml_file = os.path.join(pkg_path, "resources/wait_skill_setup.scxml")
         scxml_parser = SCXMLParser()
         SCXMLSkeleton = scxml_parser.parsing_scxml(scxml_file)
         SCXMLsimple=scxml_parser.get_simplestates()
@@ -57,7 +57,7 @@ class Testcases(unittest.TestCase):
     def test_simplestate_execution(self):
 
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
-        scxml_file = os.path.join(pkg_path, "resources/test_resources/wait_skill_execution.scxml")
+        scxml_file = os.path.join(pkg_path, "resources/wait_skill_execution.scxml")
         scxml_parser = SCXMLParser()
         SCXMLSkeleton = scxml_parser.parsing_scxml(scxml_file)
         SCXMLsimple=scxml_parser.get_simplestates()
@@ -69,7 +69,7 @@ class Testcases(unittest.TestCase):
     def test_simplestate_analysis(self):
 
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
-        scxml_file = os.path.join(pkg_path, "resources/test_resources/wait_skill_analysis.scxml")
+        scxml_file = os.path.join(pkg_path, "resources/wait_skill_analysis.scxml")
         scxml_parser = SCXMLParser()
         SCXMLSkeleton = scxml_parser.parsing_scxml(scxml_file)
         SCXMLsimple=scxml_parser.get_simplestates()
@@ -81,7 +81,7 @@ class Testcases(unittest.TestCase):
     def test_simplestate_wrong_analysis(self):
 
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
-        scxml_file = os.path.join(pkg_path, "resources/test_resources/wait_skill_analysis.scxml")
+        scxml_file = os.path.join(pkg_path, "resources/wait_skill_analysis.scxml")
         scxml_parser = SCXMLParser()
         SCXMLSkeleton = scxml_parser.parsing_scxml(scxml_file)
         SCXMLsimple=scxml_parser.get_simplestates()
