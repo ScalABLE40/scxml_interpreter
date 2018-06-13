@@ -44,10 +44,6 @@ class SmachStateProvider(object):
             return self._loaded_states[state_name]()
         else:
             return None
-    
-        
-        
-if __name__ == "__main__":
-    provider = SmachStateProvider("scxml_interpreter")
+
     
     

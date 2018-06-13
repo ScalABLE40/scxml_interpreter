@@ -24,7 +24,8 @@ class SmachBuilder():
         self.root_SM = smach.StateMachine(rootInterface.final_states)
         with self.root_SM:
             for child_state in rootInterface.states:
-                self.root_SM.add(child_state.id, self.states_instances[child_state.id], child_state.transitions)
+                child_state_interface = self.find_matching_interface(child_state)
+                self.root_SM.add(child_state_interface.id, self.states_instances[child_state_interface.id], child_state_interface.transitions)
                 #for keys in self.states_instances[child_state.id].get_registered_output_keys() + self.states_instances[child_state.id].get_registered_input_keys():
                     #self.root_SM.register_io_keys(keys)
         if(len(rootInterface.data)>0):
@@ -39,12 +40,21 @@ class SmachBuilder():
             states[id] = state
         return states
     
+    def find_matching_interface(self, id):
+        for interface in self._interface.simpleStates:
+            if(interface.id == id):
+                return interface
+        for interface in self._interface.compoundStates:
+            if(interface.id == id):
+                return interface
+    
     def create_compound_state(self, stateInterface):
         #PROVIDER 
         state = smach.StateMachine(stateInterface.get_outcomes())
         with state:
             for child_state in stateInterface.states:
-                state.add(child_state.id, self.states_instances[child_state.id], child_state.transitions)
+                child_state_interface = self.find_matching_interface(child_state)
+                state.add(child_state_interface.id, self.states_instances[child_state_interface.id], child_state_interface.transitions)
                 ##Register IO Keys
                 #for keys in self.states_instances[child_state.id].get_registered_output_keys() + self.states_instances[child_state.id].get_registered_input_keys():
                     #state.register_io_keys(keys)
@@ -105,6 +115,7 @@ class SmachBuilder():
     def create_simple_state(self, stateInterface):
         #PROVIDER
         ##Use define matching
+        print(stateInterface)
         state = self.get_python_state(stateInterface)
         outcomes = list(state.get_registered_outcomes())
         for outcome in outcomes:
