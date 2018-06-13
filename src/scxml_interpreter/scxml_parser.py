@@ -8,7 +8,10 @@ import smach
 import sys
 from os import path
 import os
+import traceback
+
 from scxml_interpreter.interface_class import *
+from scxml_interpreter.Errorexecptions import *
 
 class SCXMLParser:
     def __init__(self):
@@ -17,7 +20,6 @@ class SCXMLParser:
         self.compoundstates=[]
         self.finalstates_=[]
         self.parallelstates=[]
-        preprocess_mapping = {}
 ##parsing the file correctly####
     def parsing_scxml(self,scxml_file):
         try:
@@ -29,7 +31,7 @@ class SCXMLParser:
 ##file open  and file check if the file is scxml or not####
             if os.path.splitext(scxml_file)[1] == ".scxml":
                 file_ = open(scxml_file).read()
-                file_ = re.sub(' xmlns="[^"]+"', '', file_, count=1)              
+                file_ = re.sub(' xmlns="[^"]+"', '', file_, count=1)
                 self.root = etree.fromstring(file_)
                 self.root_Interface(self.root)
         except ParseError as ex:
@@ -57,11 +59,12 @@ class SCXMLParser:
             onExit = self.get_on_exit(node)
 
         else:
-            rospy.logerr("[SCXML Interpreter] No ID found!!!!")
+            raise InterpreterError(node_id="[SCXML Interpreter] No ID found!!!! %s"%node_id_compound)
         for state in node.findall('./state'):
             test=state.attrib.get('id')
             states.append(test)
-        Interface = CompoundStateInterface(node_id_compound,datamodel, transition,states,initial,onEntry,onExit)
+        Interface = CompoundStateInterface(node_id_compound,datamodel, transition,states,initial)
+        #print Interface
         return Interface
 
 #########creating all the simple states in the scxml######
@@ -79,8 +82,8 @@ class SCXMLParser:
         if(node_id is not None):
             transition=self.get_transition(node)
             datamodel=self.get_datamodel(node)
-
         Interface = SimpleStateInterface(node_id,datamodel,transition,onEntry,onExit)
+        print Interface
         return Interface
 ###############Parallel states####################
     def Interface_all_parallelstates(self):
@@ -94,16 +97,18 @@ class SCXMLParser:
         states=[]
         node_id=node.attrib.get('id')
         initial=node.find('./initial')
+        onEntry = self.get_on_entry(node)
+        onExit = self.get_on_exit(node)
         if(node_id is not None):
             transition=self.get_transition_parallel(node)
             datamodel=self.get_datamodel(node)
             finalstates=self.get_final_states_id()
-            onEntry = self.get_on_entry(node)
-            onExit = self.get_on_exit(node)
+
         for state in node.findall('./state'):
             test=state.attrib.get('id')
             states.append(test)
-        Interface = ParallelStateInterface(node_id,datamodel, transition,states,initial,onEntry,onExit)
+        Interface = ParallelStateInterface(node_id,datamodel, transition,states,onEntry,onExit)
+        print Interface
         return Interface
 
 
@@ -131,7 +136,7 @@ class SCXMLParser:
             self.get_simplestates()
             self.get_parallelstates()
         else:
-            rospy.logerr("[SCXML Interpreter] could not find initial state")
+            raise(InterpreterError(initial_state="[SCXML Interpreter] No inital state found!!!! %s"%initial))
         final_states=self.get_final_states_id()
         data=self.get_datamodel(root)
         Interface=RootStateInterface(initial,data,final_states,states)
@@ -148,12 +153,10 @@ class SCXMLParser:
             for transition in current_state.findall("transition"):
                 event = transition.attrib.get('event')
                 if(event is None):
-                    rospy.logerr("[SCXML Interpreter] No Transition Event for %s !!!!")
-                    return
+                    raise (InterpreterError(event="[SCXML Interpreter] No Transition Event for %s !!!!"%event))
                 target_state = transition.attrib.get('target')
                 if(target_state is None):
-                    rospy.logerr("[SCXML Interpreter] No Transition Target for %s !!!!" )
-                    return
+                    raise (InterpreterError(target="[SCXML Interpreter] No Transition Target for %s !!!!"%target_state ))
                 target.append(target_state)
                 transitions_[event] = target_state
         return transitions_
@@ -168,27 +171,22 @@ class SCXMLParser:
        for transition in current_state.findall('transition'):
            event = transition.attrib.get('event')
            if(event is None):
-               rospy.logerr("[SCXML Interpreter] No Transition Event for %s !")
-               return
+                raise (InterpreterError(event="[SCXML Interpreter] No Transition Event for %s !"%event))
            target = transition.attrib.get('target')
            if(target is None):
-               rospy.logerr("[SCXML Interpreter] No Transition Target for %s !!!!")
-               return
+                raise (InterpreterError(target="[SCXML Interpreter] No Transition Target for %s !!!!"%target))
            cond = transition.attrib.get('cond')
            if(target is None):
-               rospy.logerr("[SCXML Interpreter] No Transition Condition  for %s !!!!")
-               return
-           map_list = self.convertToConcurenceMap(cond)   
+                raise (InterpreterError(condition="[SCXML Interpreter] No Transition Condition  for %s !!!!"%condition))
+           map_list = self.convertToConcurenceMap(cond)
            if(len(map_list) == 0):
-               rospy.logerr("[SCXML Interpreter] Error during the convertion event to map for %s !!!!")
-               return
-
+               raise (InterpreterError(map="[SCXML Interpreter] Error during the convertion event to map for %s !!!!"%map_list))
            for map_ in map_list:
                outcome_ = event
                outcomes_.append(outcome_)
                outcomes_map[outcome_] = map_
                transitions_[outcome_] = target
-       return transitions_
+       return transitions_,outcomes_map
 
     def convertToConcurenceMap(self, event):
         map_list = []
@@ -222,7 +220,7 @@ class SCXMLParser:
                     rospy.logwarn('No datamodel presnt')
                 datamodel_[data_ID] = data_expr
             else:
-                rospy.logerr("[SCXML Interpreter] Data is empty")
+                raise (InterpreterError("[SCXML Interpreter] Data is empty"))
         return datamodel_
 
 ########final state#############
@@ -230,14 +228,11 @@ class SCXMLParser:
         final_states = self.root.findall('./final')
         final_states_id = []
         if(len(final_states) == 0):
-            rospy.logerr("[SCXML Interpreter] No final State found for the state")
-            return None
+            raise (InterpreterError("[SCXML Interpreter] No final State found for the state"))
         for state in final_states:
             final_id = state.attrib.get('id')
             if(final_id == None):
-                rospy.logerr("[SCXML Interpreter] No id for the final state ")
-            else:
-                final_states_id.append(final_id)
+                raise (InterpreterError("[SCXML Interpreter] No id for the final state "))
         return final_states_id
 
  ####get states#######
@@ -269,44 +264,50 @@ class SCXMLParser:
         #rospy.loginfo("parallel %s"%parallelstates)
         for node in self.root.findall('parallel'):
             node_state=node.attrib.get('id')
-            parallelstates.append(node)
-
+            self.parallelstates.append(node)
         self.Interface_all_parallelstates()
+        print parallelstates
         return self.parallelstates
+
 ###OnEntry####
-    def get_on_entry(self, state):
+    def get_on_entry(self,state):
         if(state.find('onentry') == None):
-            return []
+            return {}
         else:
-            '''
-            logs = {}
-            script = None
-            if(state.find('./onentry/script') is not None):
-                script = state.find('./onentry/script').text
+            script_attributes={}
+            script={}
+            scripts=state.findall('./onexit/script')
+            if(state.find('./onentry/script') != None):
+                if(state.find('./onentry/script').text is not None or state.find('./onentry/script').attrib.get('src') is not  None):
+                    if(len(scripts)>1):
+                        raise (InterpreterError("[SCXML Parser] More than one script in On entry"))
+                    else:
+                        content = state.find('./onentry/script').text
+                        script_attributes['content']=content
+                        for node in state.findall('./onentry/script'):
+                            src=node.attrib.get('src')
+                            script_attributes['src']=src
+                            script['script']=script_attributes
+        return script
 
-            for log in state.findall('./onentry/log'):
-                logs[log.attrib['label']] = log.attrib['expr']
-            '''
-            return []
-        
-###OnExit#####
-    def get_on_exit(self, state):
+###On exit###
+    def get_on_exit(self,state):
         if(state.find('onexit') == None):
-            return []
+            return {}
         else:
-            '''
-            logs = {}
-            script = None
-            if(state.find('./onexit/script') is not None):
-                script = state.find('./onexit/script').text
-
-            for log in state.findall('./onexit/log'):
-                logs[log.attrib['label']] = log.attrib['expr']
-            '''
-            return []
-
-
-
-
-
-
+            node_id=None
+            script_attributes={}
+            script={}
+            scripts=state.findall('./onexit/script')
+            if(state.find('./onexit/script') != None):
+                if(state.find('./onexit/script').text is not None or state.find('./onexit/script').attrib.get('src') is not None):
+                    if(len(scripts)>1):
+                        raise (InterpreterError("[SCXML Parser] More than one script in On exit"))
+                    else:
+                        content = state.find('./onexit/script').text
+                        script_attributes['content']=content
+                        for node in state.findall('./onexit/script'):
+                            src=node.attrib.get('src')
+                            script_attributes['src']=src
+                            script['script']=script_attributes
+        return script
