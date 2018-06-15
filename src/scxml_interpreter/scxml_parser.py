@@ -13,13 +13,8 @@ import traceback
 from scxml_interpreter.interface_class import *
 from scxml_interpreter.Errorexecptions import *
 
+
 class SCXMLParser:
-    def __init__(self):
-        self.isfile=True
-        self.simplestates=[]
-        self.compoundstates=[]
-        self.finalstates_=[]
-        self.parallelstates=[]
 ##parsing the file correctly####
     def parsing_scxml(self,scxml_file):
         try:
@@ -37,15 +32,19 @@ class SCXMLParser:
         except ParseError as ex:
             rospy.logerr(ex)
             rospy.logerr('parsing is not correct is not SCXML')
-
-        return self.root
+        SCXMLinterface = SCXMLInterface()
+        SCXMLinterface.rootState = self.root_Interface(self.root)
+        SCXMLinterface.simpleStates =   self.get_simplestates()
+        SCXMLinterface.compoundStates = self.get_compoundstates()
+        SCXMLinterface.parallelstates=self.get_parallelstates()
+        return SCXMLinterface
 #########creating all the compound states in the scxml######
-    def Interface_all_compoundstates(self):
-        compoundstates=[]
-        for node in self.compoundstates:
+    def Interface_all_compoundstates(self,compoundstates):
+        compoundstates_interface=[]
+        for node in compoundstates:
             if(node is not None):
-                compoundstates.append(self.Interface_compoundstate(node))
-        return compoundstates
+                compoundstates_interface.append(self.Interface_compoundstate(node))
+        return compoundstates_interface
 
 ######Each compound state provides all info state,transitions######
     def Interface_compoundstate(self,node):
@@ -57,23 +56,22 @@ class SCXMLParser:
             datamodel=self.get_datamodel(node)
             onEntry = self.get_on_entry(node)
             onExit = self.get_on_exit(node)
-
+            finalstates=self.get_final_states_id()
         else:
             raise InterpreterError(node_id="[SCXML Interpreter] No ID found!!!! %s"%node_id_compound)
         for state in node.findall('./state'):
             test=state.attrib.get('id')
             states.append(test)
-        Interface = CompoundStateInterface(node_id_compound,datamodel, transition,states,initial)
-        #print Interface
+        Interface = CompoundStateInterface(node_id_compound,datamodel, transition,states,initial,onEntry,onExit,)
         return Interface
 
 #########creating all the simple states in the scxml######
-    def Interface_all_simplestates(self):
-      simplestates=[]
-      for node in self.simplestates:
+    def Interface_all_simplestates(self, simplestates):
+      simplestates_interface=[]
+      for node in simplestates:
             if(node is not None):
-                simplestates.append(self.Interface_simplestate(node))
-      return simplestates
+                simplestates_interface.append(self.Interface_simplestate(node))
+      return simplestates_interface
 ######Each simple state provides all info state,transitions######
     def Interface_simplestate(self,node):
         node_id=node.attrib.get('id')
@@ -83,15 +81,14 @@ class SCXMLParser:
             transition=self.get_transition(node)
             datamodel=self.get_datamodel(node)
         Interface = SimpleStateInterface(node_id,datamodel,transition,onEntry,onExit)
-        print Interface
         return Interface
 ###############Parallel states####################
-    def Interface_all_parallelstates(self):
-      parallelstates=[]
-      for node in self.parallelstates:
+    def Interface_all_parallelstates(self,parallelstates):
+      parallelstates_interface=[]
+      for node in parallelstates:
             if(node is not None):
-                parallelstates.append(self.Interface_parallelstate(node))
-      return parallelstates
+                parallelstates_interface.append(self.Interface_parallelstate(node))
+      return parallelstates_interface
 
     def Interface_parallelstate(self,node):
         states=[]
@@ -108,14 +105,11 @@ class SCXMLParser:
             test=state.attrib.get('id')
             states.append(test)
         Interface = ParallelStateInterface(node_id,datamodel, transition,states,onEntry,onExit)
-        print Interface
         return Interface
 
 
     def root_Interface(self,root):
         root=self.root
-        self.current_states=[]
-        self.allstates=[]
         states=[]
         initial=root.attrib.get('initial')
         if(initial is not None):
@@ -128,13 +122,9 @@ class SCXMLParser:
                 ID=node.attrib.get('id')
                 for transition in node.findall('.//transition'):
                     target_state=transition.attrib.get('target')
-                    self.allstates.append(target_state)
             for node in self.root.findall('state'):
                 ID=node.attrib.get('id')
                 states.append(ID)
-            self.get_compoundstates()
-            self.get_simplestates()
-            self.get_parallelstates()
         else:
             raise(InterpreterError(initial_state="[SCXML Interpreter] No inital state found!!!! %s"%initial))
         final_states=self.get_final_states_id()
@@ -231,6 +221,7 @@ class SCXMLParser:
             raise (InterpreterError("[SCXML Interpreter] No final State found for the state"))
         for state in final_states:
             final_id = state.attrib.get('id')
+            final_states_id.append(final_id)
             if(final_id == None):
                 raise (InterpreterError("[SCXML Interpreter] No id for the final state "))
         return final_states_id
@@ -242,32 +233,27 @@ class SCXMLParser:
             node_state=node.attrib.get('id')
             if(node.find('./state') is not None):
                 self.node_compound=node.attrib.get('id')
-                self.compoundstates.append(node)
-        self.Interface_all_compoundstates()
-        return self.compoundstates
+                compoundstates.append(node)
+        return self.Interface_all_compoundstates(compoundstates)
 
 
     def get_simplestates(self):
-        simplestates=[]
+        simplestates = []
         for node in self.root.findall('.//state'):
             node_state=node.attrib.get('id')
             if(node.find('./state') is  None  ):
                 self.node_simple=node.attrib.get('id')
-                self.simplestates.append(node)
-                simplestates.append(self.node_simple)
-        self.Interface_all_simplestates()
-        return self.simplestates
-
+                simplestates.append(node)
+        return self.Interface_all_simplestates(simplestates)
 
     def get_parallelstates(self):
         parallelstates=[]
         #rospy.loginfo("parallel %s"%parallelstates)
         for node in self.root.findall('parallel'):
             node_state=node.attrib.get('id')
-            self.parallelstates.append(node)
-        self.Interface_all_parallelstates()
-        print parallelstates
-        return self.parallelstates
+            parallelstates.append(node)
+        return self.Interface_all_parallelstates(parallelstates)
+
 
 ###OnEntry####
     def get_on_entry(self,state):
