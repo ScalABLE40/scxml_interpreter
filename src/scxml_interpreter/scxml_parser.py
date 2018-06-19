@@ -66,7 +66,7 @@ class SCXMLParser:
         for state in node.findall('./state'):
             test=state.attrib.get('id')
             states.append(test)
-        Interface = CompoundStateInterface(node_id_compound,datamodel, transition,states,initial,onEntry,onExit,finalstates)
+        Interface = CompoundStateInterface(node_id_compound,datamodel, transition,states,initial,onEntry,onExit)
         return Interface
 
 #########creating all the simple states in the scxml######
