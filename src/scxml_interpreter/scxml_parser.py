@@ -15,10 +15,6 @@ from scxml_interpreter.Errorexecptions import *
 
 
 class SCXMLParser:
-    def __init__(self):
-        self.simplestates=[]
-        self.compoundstates=[]
-        self.parallelstates=[]
 ##parsing the file correctly####
     def parsing_scxml(self,scxml_file):
         try:
@@ -43,12 +39,12 @@ class SCXMLParser:
         SCXMLinterface.parallelstates=self.get_parallelstates()
         return SCXMLinterface
 #########creating all the compound states in the scxml######
-    def Interface_all_compoundstates(self):
-        compoundstates=[]
-        for node in self.compoundstates:
+    def Interface_all_compoundstates(self,compoundstates):
+        compoundstates_interface=[]
+        for node in compoundstates:
             if(node is not None):
-                compoundstates.append(self.Interface_compoundstate(node))
-        return compoundstates
+                compoundstates_interface.append(self.Interface_compoundstate(node))
+        return compoundstates_interface
 
 ######Each compound state provides all info state,transitions######
     def Interface_compoundstate(self,node):
@@ -66,16 +62,16 @@ class SCXMLParser:
         for state in node.findall('./state'):
             test=state.attrib.get('id')
             states.append(test)
-        Interface = CompoundStateInterface(node_id_compound,datamodel, transition,states,initial,onEntry,onExit)
+        Interface = CompoundStateInterface(node_id_compound,datamodel, transition,states,initial,onEntry,onExit,)
         return Interface
 
 #########creating all the simple states in the scxml######
-    def Interface_all_simplestates(self):
-      simplestates=[]
-      for node in self.simplestates:
+    def Interface_all_simplestates(self, simplestates):
+      simplestates_interface=[]
+      for node in simplestates:
             if(node is not None):
-                simplestates.append(self.Interface_simplestate(node))
-      return simplestates
+                simplestates_interface.append(self.Interface_simplestate(node))
+      return simplestates_interface
 ######Each simple state provides all info state,transitions######
     def Interface_simplestate(self,node):
         node_id=node.attrib.get('id')
@@ -87,12 +83,12 @@ class SCXMLParser:
         Interface = SimpleStateInterface(node_id,datamodel,transition,onEntry,onExit)
         return Interface
 ###############Parallel states####################
-    def Interface_all_parallelstates(self):
-      parallelstates=[]
-      for node in self.parallelstates:
+    def Interface_all_parallelstates(self,parallelstates):
+      parallelstates_interface=[]
+      for node in parallelstates:
             if(node is not None):
-                parallelstates.append(self.Interface_parallelstate(node))
-      return parallelstates
+                parallelstates_interface.append(self.Interface_parallelstate(node))
+      return parallelstates_interface
 
     def Interface_parallelstate(self,node):
         states=[]
@@ -237,28 +233,26 @@ class SCXMLParser:
             node_state=node.attrib.get('id')
             if(node.find('./state') is not None):
                 self.node_compound=node.attrib.get('id')
-                self.compoundstates.append(node)
-        return self.Interface_all_compoundstates()
+                compoundstates.append(node)
+        return self.Interface_all_compoundstates(compoundstates)
 
 
     def get_simplestates(self):
+        simplestates = []
         for node in self.root.findall('.//state'):
             node_state=node.attrib.get('id')
             if(node.find('./state') is  None  ):
                 self.node_simple=node.attrib.get('id')
-                self.simplestates.append(node)
-        return self.Interface_all_simplestates()
-
-
-
+                simplestates.append(node)
+        return self.Interface_all_simplestates(simplestates)
 
     def get_parallelstates(self):
         parallelstates=[]
         #rospy.loginfo("parallel %s"%parallelstates)
         for node in self.root.findall('parallel'):
             node_state=node.attrib.get('id')
-            self.parallelstates.append(node)
-        return self.Interface_all_parallelstates()
+            parallelstates.append(node)
+        return self.Interface_all_parallelstates(parallelstates)
 
 
 ###OnEntry####
