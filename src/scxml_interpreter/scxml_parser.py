@@ -41,7 +41,7 @@ class SCXMLParser:
         except ParseError as ex:
             rospy.logerr(ex)
             rospy.logerr('Parsing is not correct and the file is not SCXML')
-        
+
         SCXMLinterface = SCXMLInterface()
         SCXMLinterface.rootState = self.root_Interface(self.root)
         SCXMLinterface.simpleStates =   self.get_simplestates()
@@ -101,7 +101,7 @@ class SCXMLParser:
         return Interface
 
     def Interface_all_simplestates(self, simplestates):
-        """Interface of all the simple states are present in scxml file
+      """Interface of all the simple states are present in scxml file
 
         Here it will provide all simple states reference by having for loops
 
@@ -109,7 +109,7 @@ class SCXMLParser:
             param1 (list): simplestates.
         Returns:
             list: The return Object reference of all simple states in SCXML file
-        """
+      """
       simplestates_interface=[]
       for node in simplestates:
             if(node is not None):
@@ -141,10 +141,10 @@ class SCXMLParser:
         return Interface
 
     def Interface_all_parallelstates(self,parallelstates):
-        """Interface of all parallel states are present in scxml file
+      """Interface of all parallel states are present in scxml file
 
         Here it will provide all parallel states reference by looping parallelstates_interface
-        """
+      """
       parallelstates_interface=[]
       for node in parallelstates:
             if(node is not None):
@@ -234,7 +234,7 @@ class SCXMLParser:
 
 ###Transitions for parallel states#####
     def get_transition_parallel(self,current_state):
-        """This method is to get transition of the current state(parallel states) where we have event:target
+       """This method is to get transition of the current state(parallel states) where we have event:target
         when the event is triggered there will be trantstion from one state to target state
 
         Args:
@@ -242,7 +242,7 @@ class SCXMLParser:
 
         Returns:
             dict:transition{event:target}
-        """
+       """
        current=current_state.attrib.get('id')
        transitions_={}
        target=[]
