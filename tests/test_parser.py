@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import rospy
 import rospkg
 import os
@@ -56,7 +55,7 @@ class test_cases(unittest.TestCase):
 <<<<<<< HEAD
             test_compoundstates=compound_states[i]
         self.assertNotEqual(str(test_compoundstates),str(CompoundStateInterface("WaitSkill",{"actionName":'"/waitskill"',"actionType":"wait_skill_msgs/WaitSkillAction","actionGoal":'{"waitTime":20.0}',"actionResult":'{}'},{"preempted":"Final_4","aborted":"Final_4","succeeded":"Final_4"},["WaitSkill_EXECUTION","WaitSkill_SETUP","WaitSkill_ANALYSIS"], "WaitSkill_SETUP")))
-'''
+
     def test_simplestate_analysis(self):
         result = {"WaitSkill_EXECUTION":SimpleStateInterface("WaitSkill_EXECUTION",{'stage': 'execution'},{'preempted': 'preempted', 'aborted': 'aborted', 'succeeded': 'WaitSkill_ANALYSIS'}),
         "WaitSkill_SETUP":SimpleStateInterface("WaitSkill_SETUP",{'stage': 'setup'},{'preempted': 'preempted', 'aborted': 'aborted', 'succeeded': 'WaitSkill_EXECUTION'}),
@@ -92,16 +91,24 @@ class test_cases(unittest.TestCase):
         #self.assertEqual(test,str(())
 
     def test_simplestate_wrong_analysis(self):
-
-        pkg_path = rospkg.RosPack().get_path("scxml_manager")
-        scxml_file = os.path.join(pkg_path, "resources/simple_file.scxml")
+        result= {"WaitSkill_EXECUTION":SimpleStateInterface("WaitSkill_EXECUTION",{'stage': 'execution'},{'preempted': 'preempted','succeeded': 'WaitSkill_ANALYSIS','aborted': 'aborted'}),
+        "WaitSkill_SETUP":SimpleStateInterface("WaitSkill_SETUP",{'stage': 'setup'},{'preempted': 'preempted','succeeded': 'WaitSkill_EXECUTION', 'aborted': 'aborted'}),
+        "WaitSkill_ANALYSIS":SimpleStateInterface("WaitSkill_ANALYSIS",{'stage': 'analysis'},{'preempted':'preempted','aborted':'aborted','succeeded':'succeeded'})}
+        test_simplestates=[]
+        pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
+        scxml_file = os.path.join(pkg_path, "resources/scxml/simple_file.scxml")
         scxml_parser = SCXMLParser()
         SCXMLSkeleton = scxml_parser.parsing_scxml(scxml_file)
-        simple_state=scxml_parser.simplestates
-        for states in simple_state:
-            skelteonsimple=scxml_parser.Interface_simplestate(states)
-        self.assertNotEqual(str(skelteonsimple),str(SimpleStateInterface("WaitSkill_EXECUTION",{'stage': 'analysis'},{"preempted":"preempted","aborted":"aborted","succeeded":"succeeded"})))
+        simple_states=scxml_parser.get_simplestates()
+        for id in result:
+            for i in range(len(simple_states)):
+                test_simplestates.append(simple_states[i])
+            for test_sstates in test_simplestates:
+                if id !=test_sstates.id:
+                    test_result=result[id]
+                    self.assertNotEqual(str(test_sstates),str(result[id]))
 
+'''
     def test_simplestate_execution(self):
 
         pkg_path = rospkg.RosPack().get_path("scxml_manager")
@@ -158,8 +165,17 @@ class test_cases(unittest.TestCase):
                     test_result=result[id]
                     self.assertNotEqual(str(test_sstates),str(result[id]))
 
+    def test_simplestate_analysis(self):
 
-'''
+        pkg_path = rospkg.RosPack().get_path("scxml_manager")
+        scxml_file = os.path.join(pkg_path, "resources/simple_file.scxml")
+        scxml_parser = SCXMLParser()
+        SCXMLSkeleton = scxml_parser.parsing_scxml(scxml_file)
+        SCXMLsimple=scxml_parser.get_simplestates()
+        for test_simple in SCXMLsimple:
+            skelteoncomp=scxml_parser.Interface_simplestate(test_simple)
+        self.assertEqual(str(skelteoncomp),str(SimpleStateSkeleton("WaitSkill_ANALYSIS",{'stage': 'analysis'},
+        {"preempted":"preempted","aborted":"aborted","succeeded":"succeeded"})))
 
     def test_parallelstate(self):
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
