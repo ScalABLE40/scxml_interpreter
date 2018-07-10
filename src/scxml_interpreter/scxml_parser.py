@@ -41,7 +41,11 @@ class SCXMLParser:
         except ParseError as ex:
             rospy.logerr(ex)
             rospy.logerr('Parsing is not correct and the file is not SCXML')
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
         SCXMLinterface = SCXMLInterface()
         SCXMLinterface.rootState = self.root_Interface(self.root)
         SCXMLinterface.simpleStates =   self.get_simplestates()
@@ -101,7 +105,11 @@ class SCXMLParser:
         return Interface
 
     def Interface_all_simplestates(self, simplestates):
+<<<<<<< HEAD
       """Interface of all the simple states are present in scxml file
+=======
+        """Interface of all the simple states are present in scxml file
+>>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
 
         Here it will provide all simple states reference by having for loops
 
@@ -109,7 +117,11 @@ class SCXMLParser:
             param1 (list): simplestates.
         Returns:
             list: The return Object reference of all simple states in SCXML file
+<<<<<<< HEAD
       """
+=======
+        """
+>>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
       simplestates_interface=[]
       for node in simplestates:
             if(node is not None):
@@ -141,10 +153,17 @@ class SCXMLParser:
         return Interface
 
     def Interface_all_parallelstates(self,parallelstates):
+<<<<<<< HEAD
       """Interface of all parallel states are present in scxml file
 
         Here it will provide all parallel states reference by looping parallelstates_interface
       """
+=======
+        """Interface of all parallel states are present in scxml file
+
+        Here it will provide all parallel states reference by looping parallelstates_interface
+        """
+>>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
       parallelstates_interface=[]
       for node in parallelstates:
             if(node is not None):
@@ -234,7 +253,11 @@ class SCXMLParser:
 
 ###Transitions for parallel states#####
     def get_transition_parallel(self,current_state):
+<<<<<<< HEAD
        """This method is to get transition of the current state(parallel states) where we have event:target
+=======
+        """This method is to get transition of the current state(parallel states) where we have event:target
+>>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
         when the event is triggered there will be trantstion from one state to target state
 
         Args:
@@ -242,7 +265,11 @@ class SCXMLParser:
 
         Returns:
             dict:transition{event:target}
+<<<<<<< HEAD
        """
+=======
+        """
+>>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
        current=current_state.attrib.get('id')
        transitions_={}
        target=[]
