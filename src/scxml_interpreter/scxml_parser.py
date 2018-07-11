@@ -41,15 +41,7 @@ class SCXMLParser:
         except ParseError as ex:
             rospy.logerr(ex)
             rospy.logerr('Parsing is not correct and the file is not SCXML')
-<<<<<<< HEAD
 
-=======
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
->>>>>>> refs/remotes/origin/master
         SCXMLinterface = SCXMLInterface()
         SCXMLinterface.rootState = self.root_Interface(self.root)
         SCXMLinterface.simpleStates =   self.get_simplestates()
@@ -109,15 +101,9 @@ class SCXMLParser:
         return Interface
 
     def Interface_all_simplestates(self, simplestates):
-<<<<<<< HEAD
-      """Interface of all the simple states are present in scxml file
-=======
-<<<<<<< HEAD
-      """Interface of all the simple states are present in scxml file
-=======
-        """Interface of all the simple states are present in scxml file
->>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
->>>>>>> refs/remotes/origin/master
+      """
+      Interface of all the simple states are present in scxml file
+
 
         Here it will provide all simple states reference by having for loops
 
@@ -125,15 +111,7 @@ class SCXMLParser:
             param1 (list): simplestates.
         Returns:
             list: The return Object reference of all simple states in SCXML file
-<<<<<<< HEAD
       """
-=======
-<<<<<<< HEAD
-      """
-=======
-        """
->>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
->>>>>>> refs/remotes/origin/master
       simplestates_interface=[]
       for node in simplestates:
             if(node is not None):
@@ -165,23 +143,11 @@ class SCXMLParser:
         return Interface
 
     def Interface_all_parallelstates(self,parallelstates):
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> refs/remotes/origin/master
+
       """Interface of all parallel states are present in scxml file
 
         Here it will provide all parallel states reference by looping parallelstates_interface
       """
-<<<<<<< HEAD
-=======
-=======
-        """Interface of all parallel states are present in scxml file
-
-        Here it will provide all parallel states reference by looping parallelstates_interface
-        """
->>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
->>>>>>> refs/remotes/origin/master
       parallelstates_interface=[]
       for node in parallelstates:
             if(node is not None):
@@ -271,38 +237,19 @@ class SCXMLParser:
 
 ###Transitions for parallel states#####
     def get_transition_parallel(self,current_state):
-<<<<<<< HEAD
 
        """
-        This method is to get transition of the current state(parallel states) where we have event:target
+           This method is to get transition of the current state(parallel states) where we have event:target
 
-        when the event is triggered there will be trantstion from one state to target state
+           when the event is triggered there will be trantstion from one state to target state
 
-        Args:
-              param1(string) :current_state
+           Args:
+                 param1(string) :current_state
 
-        Returns:
-              dict:transition{event:target}
+           Returns:
+
+                 dict:transition{event:target}
        """
-=======
-<<<<<<< HEAD
-       """This method is to get transition of the current state(parallel states) where we have event:target
-=======
-        """This method is to get transition of the current state(parallel states) where we have event:target
->>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
-        when the event is triggered there will be trantstion from one state to target state
-
-        Args:
-            param1(string) :current_state
-
-        Returns:
-            dict:transition{event:target}
-<<<<<<< HEAD
-       """
-=======
-        """
->>>>>>> 7da330afa5c0c2643cad8f4981e9d670f81281d1
->>>>>>> refs/remotes/origin/master
        current=current_state.attrib.get('id')
        transitions_={}
        target=[]
