@@ -38,6 +38,10 @@ class test_cases(unittest.TestCase):
     #testing the compound states and it is not equal to the expected ouput
     def test_compoundstate_wrong_skill(self):
         result={"WaitSkill":CompoundStateInterface("Waitkill",{"actionName":'"/waitskill"',"actionType":"wait_skill_msgs/WaitSkillAction","actionGoal":'{"waitTime":20.0}',"actionResult":'{}'},{"preempted":"Final_4","aborted":"Final_4","succeeded":"Final_4"},["WaitSkill_EXECUTION","WaitSkill_SETUP","WaitSkill_ANALYSIS"], "WaitSkill_SETUP")}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
         scxml_file = os.path.join(pkg_path, "resources/scxml/simple_file.scxml")
         scxml_parser = SCXMLParser()
@@ -45,6 +49,7 @@ class test_cases(unittest.TestCase):
         compound_states=scxml_parser.get_compoundstates()
         test_compoundstates=[]
         for i in range(len(compound_states)):
+<<<<<<< HEAD
             test_compoundstates=compound_states[i]
         self.assertNotEqual(str(test_compoundstates),str(CompoundStateInterface("WaitSkill",{"actionName":'"/waitskill"',"actionType":"wait_skill_msgs/WaitSkillAction","actionGoal":'{"waitTime":20.0}',"actionResult":'{}'},{"preempted":"Final_4","aborted":"Final_4","succeeded":"Final_4"},["WaitSkill_EXECUTION","WaitSkill_SETUP","WaitSkill_ANALYSIS"], "WaitSkill_SETUP")))
 
@@ -68,6 +73,17 @@ class test_cases(unittest.TestCase):
                     self.assertEqual(str(test_sstates),str(test_result))
 
     def test_simplestate_wrong_analysis(self):
+=======
+            test_compoundstates.append(compound_states[i])
+        for id in result:
+            for test_cstates in test_compoundstates:
+                if id ==test_cstates.id:
+                    test_result=result[id]
+                    self.assertNotEqual(str(test_cstates),str(test_result))
+
+    #testing the simple states and it is equal to the expected ouput
+    def test_simplestate_together(self):
+>>>>>>> refs/remotes/origin/master
         result= {"WaitSkill_EXECUTION":SimpleStateInterface("WaitSkill_EXECUTION",{'stage': 'execution'},{'preempted': 'preempted','succeeded': 'WaitSkill_ANALYSIS','aborted': 'aborted'}),
         "WaitSkill_SETUP":SimpleStateInterface("WaitSkill_SETUP",{'stage': 'setup'},{'preempted': 'preempted','succeeded': 'WaitSkill_EXECUTION', 'aborted': 'aborted'}),
         "WaitSkill_ANALYSIS":SimpleStateInterface("WaitSkill_ANALYSIS",{'stage': 'analysis'},{'preempted':'preempted','aborted':'aborted','succeeded':'succeeded'})}
@@ -75,6 +91,7 @@ class test_cases(unittest.TestCase):
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
         scxml_file = os.path.join(pkg_path, "resources/scxml/simple_file.scxml")
         scxml_parser = SCXMLParser()
+<<<<<<< HEAD
         SCXMLSkeleton = scxml_parser.parsing_scxml(scxml_file)
         simple_states=scxml_parser.get_simplestates()
         for id in result:
@@ -90,6 +107,18 @@ class test_cases(unittest.TestCase):
 
         pkg_path = rospkg.RosPack().get_path("scxml_manager")
         scxml_file = os.path.join(pkg_path, "resources/simple_file.scxml")
+=======
+        SCXMLInterface = scxml_parser.parsing_scxml(scxml_file)
+        simple_states=scxml_parser.get_simplestates()
+        for i in range(len(simple_states)):
+            test_simplestates.append(simple_states[i])
+        for id in result:
+            for test_sstates in test_simplestates:
+                if id ==test_sstates.id:
+                    test_result=result[id]
+                    self.assertEqual(str(test_sstates),str(test_result))
+
+>>>>>>> refs/remotes/origin/master
     #testing the simple states and it is not equal to the expected ouput
     def test_simplestate_wrong_analysis(self):
         result= {"WaitSkill_ANALYSIS":SimpleStateInterface("WaitSkill_ANLYSIS",{'stage': 'analysis'},{'preempted':'preempted','aborted':'aborted','succeeded':'succeeded'})}
@@ -141,7 +170,13 @@ class test_cases(unittest.TestCase):
                     test_result=result[id]
                     self.assertNotEqual(str(test_sstates),str(result[id]))
 
+<<<<<<< HEAD
 '''
+=======
+
+'''
+
+>>>>>>> refs/remotes/origin/master
     def test_parallelstate(self):
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
         scxml_file = os.path.join(pkg_path, "resources/scxml/parallel.scxml")
