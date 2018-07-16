@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" name="generic_skill" qt:editorversion="4.4.1" initial="WaitSkill">
+    <qt:editorinfo initialGeometry="601.75;25.68;-20;-20;40;40"/>
+    <state id="WaitSkill">
+        <qt:editorinfo geometry="353.81;240.77;-10.57;-144.61;517.03;730.19" scenegeometry="353.81;240.77;343.24;96.16;517.03;730.19"/>
+        <datamodel>
+            <data id="actionName" expr="&quot;/WaitSkill&quot;"/>
+            <data id="actionGoal" expr="{&quot;waitTime&quot;:15.0}">
+                <qt:editorinfo geometry="26.49;30.57;0;0;0;0"/>
+            </data>
+            <data id="actionType" expr="'wait_skill_msgs/WaitSkillAction'"/>
+            <data id="actionResult" expr="{}"/>
+        </datamodel>
+        <state id="WaitSkill_EXECUTION">
+            <qt:editorinfo geometry="281.06;212.90;-136.11;-27;234.38;100" scenegeometry="620.67;397.70;484.56;370.70;234.38;100"/>
+            <transition type="external" event="succeeded" target="WaitSkill_ANALYSIS"/>
+            <transition type="external" event="preempted" target="preempted">
+                <qt:editorinfo localGeometry="164.70;35.78"/>
+            </transition>
+            <transition type="external" event="aborted" target="aborted">
+                <qt:editorinfo localGeometry="-231.63;45.45"/>
+            </transition>
+            <datamodel>
+                <data id="stage" expr="execution"/>
+            </datamodel>
+        </state>
+        <final id="aborted">
+            <qt:editorinfo geometry="30.51;513.35;-20;-20;40;40" scenegeometry="370.12;698.15;350.12;678.15;40;40"/>
+        </final>
+        <final id="preempted">
+            <qt:editorinfo geometry="426.84;523.29;-20;-20;40;40" scenegeometry="766.45;708.09;746.45;688.09;40;40"/>
+        </final>
+        <final id="succeeded">
+            <qt:editorinfo geometry="262.49;545.58;-20;-20;40;40" scenegeometry="602.10;730.38;582.10;710.38;40;40"/>
+        </final>
+        <transition type="external" event="preempted" target="Final_4">
+            <qt:editorinfo startTargetFactors="72.38;98.07"/>
+        </transition>
+        <transition type="external" event="succeeded" target="Final_4">
+            <qt:editorinfo startTargetFactors="44.18;98.63"/>
+        </transition>
+        <transition type="external" event="aborted" target="Final_4">
+            <qt:editorinfo startTargetFactors="17.21;98.11"/>
+        </transition>
+        <initial>
+            <qt:editorinfo geometry="247.95;-40.80;-20;-20;40;40" scenegeometry="587.56;144;567.56;124;40;40"/>
+            <transition type="external" event="transition" target="WaitSkill_SETUP">
+                <qt:editorinfo movePoint="-57.83;-2.51" endTargetFactors="50.61;2.31"/>
+            </transition>
+        </initial>
+        <state id="WaitSkill_SETUP">
+            <qt:editorinfo geometry="305.95;102.81;-157.23;-91.92;226.83;104.21" scenegeometry="645.56;287.61;488.33;195.69;226.83;104.21"/>
+            <datamodel>
+                <data id="stage" expr="setup"/>
+            </datamodel>
+            <transition type="external" event="succeeded" target="WaitSkill_EXECUTION"/>
+            <transition type="external" event="preempted" target="preempted">
+                <qt:editorinfo localGeometry="183.21;4.87"/>
+            </transition>
+            <transition type="external" event="aborted" target="aborted">
+                <qt:editorinfo localGeometry="-250.90;25.02"/>
+            </transition>
+        </state>
+        <state id="WaitSkill_ANALYSIS">
+            <qt:editorinfo geometry="281.37;388.30;-127.69;-27;216.92;100" scenegeometry="620.98;573.10;493.29;546.10;216.92;100"/>
+            <transition type="external" event="aborted" target="aborted">
+                <qt:editorinfo movePoint="10.70;-17.13" localGeometry="-231.63;22.33"/>
+            </transition>
+            <transition type="external" event="succeeded" target="succeeded"/>
+            <datamodel>
+                <data id="stage" expr="analysis"/>
+            </datamodel>
+            <transition type="external" event="preempted" target="preempted">
+                <qt:editorinfo movePoint="9.63;10.71" startTargetFactors="95.28;53" localGeometry="66.48;22.78"/>
+            </transition>
+        </state>
+    </state>
+    <final id="Final_4">
+        <qt:editorinfo geometry="647.10;912.88;-20;-20;40;40" scenegeometry="647.10;912.88;627.10;892.88;40;40"/>
+    </final>
+</scxml>
