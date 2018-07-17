@@ -2,8 +2,8 @@
 Changelog for package scxml_interpreter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.1 (2018-07-17)
+------------------
 * Merge pull request `#6 <https://github.com/ipa-led/scxml_interpreter/issues/6>`_ from shrutisub/WIP
   Fixed scxml parser  and updated tests
 * Added documentation
