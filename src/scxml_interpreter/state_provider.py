@@ -14,7 +14,7 @@ class SmachStateProvider(object):
         self._pkg = package
         self._loaded_states = {}
         self._get_all_smach_states(package)
-    
+
     def _get_all_smach_states(self, pkg_name):
         pkg = importlib.import_module(pkg_name)
         for importer, modname, ispkg in pkgutil.iter_modules(pkg.__path__):
@@ -27,23 +27,20 @@ class SmachStateProvider(object):
                         if issubclass(dir_obj, smach.State):
                             rospy.logdebug("[StateProvider] Loading %s from %s"%(dir_name,str(dir_obj)))
                             if(dir_name in self._loaded_states.iterkeys()):
-                                new_name = str(modname)+"_"+dirname
+                                new_name = str(modname)+"_"+dir_name
                                 rospy.logwarn("[StateProvider] Two states with the same name are found in the provider.\
-                                \n1.%s from %s\n2.%s from %s. It will be renamed %s in the provider." %(dir_name,self.states_provider[dir_name],dir_name,dir_obj,new_name))
+                                \n1.%s from %s\n2.%s from %s. It will be renamed %s in the provider." %(dir_name, [dir_name], dir_name, dir_obj, new_name))
                                 self._loaded_states[new_name] = dir_obj
                             else:
                                 self._loaded_states[dir_name] = dir_obj
-                                
+
     def reload(self):
-        #for state in self._loaded_states:   
+        #for state in self._loaded_states:
         #self._get_all_smach_states(self._pkg)
         pass
-    
-    def get_state(self, state_name):
-        if state_name in self._loaded_states.iterkeys():
-            return self._loaded_states[state_name]()
-        else:
-            return None
 
-    
-    
+    def get_state(self, state_name):
+        for key in self._loaded_states.iterkeys():
+            if state_name.startswith(key):
+                return self._loaded_states[key]()
+        return None
