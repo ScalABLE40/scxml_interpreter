@@ -4,11 +4,7 @@ import rospy
 import re
 from roslib.packages import get_pkg_dir
 import xml.etree.ElementTree as etree
-import smach
-import sys
-from os import path
 import os
-import traceback
 
 from scxml_interpreter.interface_class import *
 from scxml_interpreter.Errorexecptions import *
@@ -16,16 +12,7 @@ from scxml_interpreter.Errorexecptions import *
 
 class SCXMLParser:
     """Parsing all the details for constructing the state machine from scxml machine"""
-    def parsing_scxml(self,scxml_file):
-        """file open  and file check if the file is scxml or notself.
-        Converting the SCXML data to python structure.Here it is Interface
-
-        Args:
-            param1(scxml format):scxml_file
-
-        Returns:
-            Object:python structured SCXML data
-        """
+    def parsing_scxml(self, scxml_file):
         try:
             ParseError = etree.ParseError
         except ImportError:
@@ -36,8 +23,23 @@ class SCXMLParser:
             if os.path.splitext(scxml_file)[1] == ".scxml":
                 file_ = open(scxml_file).read()
                 file_ = re.sub(' xmlns="[^"]+"', '', file_, count=1)
-                self.root = etree.fromstring(file_)
-                self.root_Interface(self.root)
+        except ParseError as ex:
+            rospy.logerr(ex)
+        return self.parsing_string(file_)
+
+    def parsing_string(self, string):
+        """file open  and file check if the file is scxml or notself.
+        Converting the SCXML data to python structure.Here it is Interface
+
+        Args:
+            param1(scxml format):scxml_file
+
+        Returns:
+            Object:python structured SCXML data
+        """
+        try:
+            self.root = etree.fromstring(string)
+            self.root_Interface(self.root)
         except ParseError as ex:
             rospy.logerr(ex)
             rospy.logerr('Parsing is not correct and the file is not SCXML')
@@ -49,7 +51,7 @@ class SCXMLParser:
         SCXMLinterface.parallelstates=self.get_parallelstates()
         return SCXMLinterface
 
-    def Interface_all_compoundstates(self,compoundstates):
+    def Interface_all_compoundstates(self, compoundstates):
         """Interface of all the compound states in present in scxml file
 
         Here it will provide all compound states refernce by havinf for loopself.

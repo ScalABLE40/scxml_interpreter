@@ -40,10 +40,10 @@ class SmachStateProvider(object):
         pass
     
     def get_state(self, state_name):
-        if state_name in self._loaded_states.iterkeys():
-            return self._loaded_states[state_name]()
-        else:
-            return None
+        for key in self._loaded_states.iterkeys():
+            if key.startswith(state_name):
+                return self._loaded_states[key]()
+        return None
 
     
     
