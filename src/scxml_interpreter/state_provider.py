@@ -27,9 +27,9 @@ class SmachStateProvider(object):
                         if issubclass(dir_obj, smach.State):
                             rospy.logdebug("[StateProvider] Loading %s from %s"%(dir_name,str(dir_obj)))
                             if(dir_name in self._loaded_states.iterkeys()):
-                                new_name = str(modname)+"_"+dirname
+                                new_name = str(modname)+"_"+dir_name
                                 rospy.logwarn("[StateProvider] Two states with the same name are found in the provider.\
-                                \n1.%s from %s\n2.%s from %s. It will be renamed %s in the provider." %(dir_name,self.states_provider[dir_name],dir_name,dir_obj,new_name))
+                                \n1.%s from %s\n2.%s from %s. It will be renamed %s in the provider." %(dir_name, [dir_name], dir_name, dir_obj, new_name))
                                 self._loaded_states[new_name] = dir_obj
                             else:
                                 self._loaded_states[dir_name] = dir_obj
@@ -41,7 +41,8 @@ class SmachStateProvider(object):
     
     def get_state(self, state_name):
         for key in self._loaded_states.iterkeys():
-            if key.startswith(state_name):
+            if state_name.startswith(key):
+                print(state_name)
                 return self._loaded_states[key]()
         return None
 
