@@ -17,16 +17,16 @@ class test_cases(unittest.TestCase):
         scxml_parser = SCXMLParser()
         SCXMLInterface = scxml_parser.parsing_scxml(scxml_file)
         SCXMLRootInterface = scxml_parser.root_Interface(SCXMLInterface)
-        self.assertEqual(str(SCXMLRootInterface), str(RootStateInterface('WaitSkill',{},["Final_4"],['WaitSkill'])))
+        self.assertEqual(str(SCXMLRootInterface), str(RootStateInterface({}, ["Final_4"], ['WaitSkill'], 'WaitSkill')))
     #testing the compound states and it is equal to the expected ouput
     def test_compoundstate(self):
-        result={"WaitSkill":CompoundStateInterface("WaitSkill",{"actionName":'"/WaitSkill"',"actionType":"'wait_skill_msgs/WaitSkillAction'","actionGoal":'{"waitTime":15.0}',"actionResult":'{}'},{'preempted':'Final_4','succeeded':'Final_4','aborted':'Final_4'},["WaitSkill_EXECUTION","WaitSkill_SETUP","WaitSkill_ANALYSIS"], "WaitSkill_SETUP")}
+        result={"WaitSkill": CompoundStateInterface("WaitSkill",{"actionName":'"/WaitSkill"',"actionType":"'wait_skill_msgs/WaitSkillAction'","actionGoal":'{"waitTime":15.0}',"actionResult":'{}'},{'preempted':'Final_4','succeeded':'Final_4','aborted':'Final_4'},["WaitSkill_EXECUTION","WaitSkill_SETUP","WaitSkill_ANALYSIS"], "WaitSkill_SETUP")}
         test_compoundstates=[]
         pkg_path = rospkg.RosPack().get_path("scxml_interpreter")
         scxml_file = os.path.join(pkg_path, "resources/scxml/simple_file.scxml")
         scxml_parser = SCXMLParser()
         SCXMLInterface = scxml_parser.parsing_scxml(scxml_file)
-        compound_states=scxml_parser.get_compoundstates()
+        compound_states=scxml_parser.get_compoundstate_nodes()
         for i in range(len(compound_states)):
             test_compoundstates.append(compound_states[i])
         for id in result:
@@ -43,7 +43,7 @@ class test_cases(unittest.TestCase):
         scxml_file = os.path.join(pkg_path, "resources/scxml/simple_file.scxml")
         scxml_parser = SCXMLParser()
         SCXMLInterface = scxml_parser.parsing_scxml(scxml_file)
-        compound_states=scxml_parser.get_compoundstates()
+        compound_states=scxml_parser.get_compoundstate_nodes()
         test_compoundstates=[]
         for i in range(len(compound_states)):
             test_compoundstates.append(compound_states[i])
@@ -63,7 +63,7 @@ class test_cases(unittest.TestCase):
         scxml_file = os.path.join(pkg_path, "resources/scxml/simple_file.scxml")
         scxml_parser = SCXMLParser()
         SCXMLInterface = scxml_parser.parsing_scxml(scxml_file)
-        simple_states=scxml_parser.get_simplestates()
+        simple_states=scxml_parser.get_simplestate_nodes()
         for i in range(len(simple_states)):
             test_simplestates.append(simple_states[i])
         for id in result:
@@ -80,7 +80,7 @@ class test_cases(unittest.TestCase):
         scxml_file = os.path.join(pkg_path, "resources/scxml/simple_file.scxml")
         scxml_parser = SCXMLParser()
         SCXMLInterface = scxml_parser.parsing_scxml(scxml_file)
-        simple_states=scxml_parser.get_simplestates()
+        simple_states=scxml_parser.get_simplestate_nodes()
         for i in range(len(simple_states)):
             test_simplestates.append(simple_states[i])
         for id in result:
@@ -98,7 +98,7 @@ class test_cases(unittest.TestCase):
         scxml_file = os.path.join(pkg_path, "resources/scxml/simple_file.scxml")
         scxml_parser = SCXMLParser()
         SCXMLInterface = scxml_parser.parsing_scxml(scxml_file)
-        simple_states=scxml_parser.get_simplestates()
+        simple_states=scxml_parser.get_simplestate_nodes()
         for i in range(len(simple_states)):
             test_simplestates.append(simple_states[i])
         for id in result:
@@ -114,7 +114,7 @@ class test_cases(unittest.TestCase):
         scxml_file = os.path.join(pkg_path, "resources/scxml/simple_file.scxml")
         scxml_parser = SCXMLParser()
         SCXMLInterface = scxml_parser.parsing_scxml(scxml_file)
-        simple_states=scxml_parser.get_simplestates()
+        simple_states=scxml_parser.get_simplestate_nodes()
         for i in range(len(simple_states)):
             test_simplestates.append(simple_states[i])
         for id in result:
