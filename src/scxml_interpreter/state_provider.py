@@ -14,7 +14,7 @@ class SmachStateProvider(object):
         self._pkg = package
         self._loaded_states = {}
         self._get_all_smach_states(package)
-    
+
     def _get_all_smach_states(self, pkg_name):
         pkg = importlib.import_module(pkg_name)
         for importer, modname, ispkg in pkgutil.iter_modules(pkg.__path__):
@@ -33,18 +33,14 @@ class SmachStateProvider(object):
                                 self._loaded_states[new_name] = dir_obj
                             else:
                                 self._loaded_states[dir_name] = dir_obj
-                                
+
     def reload(self):
-        #for state in self._loaded_states:   
+        #for state in self._loaded_states:
         #self._get_all_smach_states(self._pkg)
         pass
-    
+
     def get_state(self, state_name):
         for key in self._loaded_states.iterkeys():
             if state_name.startswith(key):
-                print(state_name)
                 return self._loaded_states[key]()
         return None
-
-    
-    
