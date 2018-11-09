@@ -2,8 +2,8 @@
 Changelog for package scxml_interpreter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.2 (2018-11-09)
+------------------
 * refactored scxml_interpreter
 * Contributors: Ludovic Delval
 
