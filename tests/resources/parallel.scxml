@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" name="TestParallel" qt:editorversion="4.6.2" initial="dummy_print">
+    <qt:editorinfo initialGeometry="16.10;-546.99;-20;-20;40;40"/>
+    <state id="dummy_print">
+        <qt:editorinfo scenegeometry="16.10;-400.61;-43.90;-450.61;120;100" geometry="16.10;-400.61;-60;-50;120;100"/>
+        <datamodel>
+            <data id="print_text" expr="dummy_text_1">
+                <qt:editorinfo geometry="-695.71;-611.65;0;0;0;0"/>
+            </data>
+        </datamodel>
+        <transition type="external" event="succeeded" target="Parallel_3">
+            <qt:editorinfo endTargetFactors="40.82;13.31"/>
+        </transition>
+    </state>
+    <parallel id="Parallel_3">
+        <qt:editorinfo scenegeometry="-198.58;-151.51;-425.27;-284.84;1057.33;937.73" geometry="-198.58;-151.51;-226.69;-133.33;1057.33;937.73"/>
+        <state id="dummy_print_sim">
+            <qt:editorinfo scenegeometry="-325.27;-1.62;-383.91;-66.72;191.28;100" geometry="-126.69;149.89;-58.64;-65.10;191.28;100"/>
+            <datamodel/>
+        </state>
+        <state id="dummy_print_super_parent">
+            <qt:editorinfo scenegeometry="33.50;139.86;-150.01;-111.58;506.80;670.05" geometry="232.08;291.37;-183.51;-251.44;506.80;670.05"/>
+            <state id="dummy_print_Parent">
+                <qt:editorinfo scenegeometry="58.29;154.48;-43.20;37.95;282.48;345.76" geometry="26.33;14.62;-101.49;-116.53;282.48;345.76"/>
+                <state id="dummy_print_child">
+                    <qt:editorinfo scenegeometry="103.39;216.25;12.33;166.25;182.13;100" geometry="45.10;61.77;-91.06;-50;182.13;100"/>
+                    <transition type="external" event="succeeded" target="succeeded">
+                        <qt:editorinfo movePoint="6.51;4.88"/>
+                    </transition>
+                    <datamodel>
+                        <data id="print_text" expr="dummy_text_child_child">
+                            <qt:editorinfo geometry="-546.44;-520.42;0;0;0;0"/>
+                        </data>
+                    </datamodel>
+                </state>
+                <final id="succeeded">
+                    <qt:editorinfo scenegeometry="103.39;321.95;83.39;301.95;40;40" geometry="45.10;167.47;-20;-20;40;40"/>
+                </final>
+                <initial>
+                    <qt:editorinfo scenegeometry="97.58;121.98;77.58;101.98;40;40" geometry="39.29;-32.50;-20;-20;40;40"/>
+                    <transition type="external" event="Transition_4" target="dummy_print_child"/>
+                </initial>
+                <transition type="external" event="succeeded" target="succeeded">
+                    <qt:editorinfo startTargetFactors="51.79;95.58"/>
+                </transition>
+            </state>
+            <initial>
+                <qt:editorinfo scenegeometry="106.89;-11.38;86.89;-31.38;40;40" geometry="74.93;-151.24;-20;-20;40;40"/>
+                <transition type="external" event="Transition_1" target="dummy_print_Parent">
+                    <qt:editorinfo endTargetFactors="52.35;26.59"/>
+                </transition>
+            </initial>
+            <final id="succeeded">
+                <qt:editorinfo scenegeometry="103.39;463.47;83.39;443.47;40;40" geometry="71.43;323.61;-20;-20;40;40"/>
+            </final>
+        </state>
+        <state id="dummy_outcome">
+            <qt:editorinfo scenegeometry="478.14;-29.27;395.79;-79.27;164.70;100" geometry="676.72;122.24;-82.35;-50;164.70;100"/>
+            <datamodel>
+                <data id="outcome" expr="out0"/>
+            </datamodel>
+        </state>
+        <transition type="external" event="default" target="Final_11">
+            <qt:editorinfo movePoint="-37.41;-1.63"/>
+        </transition>
+        <transition type="external" event="Map1" target="Final_12" cond="dummy_print_sim.succeeded AND dummy_outcome.out1">
+            <qt:editorinfo movePoint="26.02;-3.25"/>
+        </transition>
+        <transition type="external" event="Map2" target="Final_13" cond="dummy_outcome.out0">
+            <qt:editorinfo movePoint="19.41;1.62"/>
+        </transition>
+    </parallel>
+    <final id="Final_11">
+        <qt:editorinfo scenegeometry="-276.47;857.07;-296.47;837.07;40;40" geometry="-276.47;857.07;-20;-20;40;40"/>
+    </final>
+    <final id="Final_12">
+        <qt:editorinfo scenegeometry="103.39;857.07;83.39;837.07;40;40" geometry="103.39;857.07;-20;-20;40;40"/>
+    </final>
+    <final id="Final_13">
+        <qt:editorinfo scenegeometry="391.95;839.18;371.95;819.18;40;40" geometry="391.95;839.18;-20;-20;40;40"/>
+    </final>
+</scxml>

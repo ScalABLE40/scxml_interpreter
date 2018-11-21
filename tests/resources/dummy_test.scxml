@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" qt:editorversion="4.6.2" initial="dummy_print1">
+    <qt:editorinfo initialGeometry="323.29;-162.08;-20;-20;40;40"/>
+    <datamodel>
+        <data id="print_text" expr="ROOT_Text"/>
+    </datamodel>
+    <state id="dummy_print1">
+        <qt:editorinfo scenegeometry="323.29;-49.83;248.84;-99.83;148.89;100" geometry="323.29;-49.83;-74.45;-50;148.89;100"/>
+        <transition type="external" event="succeeded" target="dummy_print_2">
+            <qt:editorinfo movePoint="34.50;0"/>
+        </transition>
+        <datamodel>
+            <data id="print_text" expr="dummy_text_1">
+                <qt:editorinfo geometry="-154.68;-124.01;0;0;0;0"/>
+            </data>
+        </datamodel>
+    </state>
+    <state id="dummy_print_2">
+        <qt:editorinfo scenegeometry="323.29;127.79;244.91;77.79;156.75;100" geometry="323.29;127.79;-78.38;-50;156.75;100"/>
+        <transition type="external" event="succeeded" target="State_6">
+            <qt:editorinfo endTargetFactors="78.25;8.03" movePoint="38.34;1.28"/>
+        </transition>
+        <datamodel>
+            <data id="print_text" expr="dummy_text_2">
+                <qt:editorinfo geometry="-184.68;-154.01;0;0;0;0"/>
+            </data>
+        </datamodel>
+    </state>
+    <state id="dummy_outcome">
+        <qt:editorinfo scenegeometry="323.29;737.31;238.87;687.31;168.84;100" geometry="323.29;737.31;-84.42;-50;168.84;100"/>
+        <datamodel>
+            <data id="outcome" expr="out1">
+                <qt:editorinfo geometry="-214.68;-184.01;0;0;0;0"/>
+            </data>
+        </datamodel>
+        <transition type="external" event="out1" target="out1">
+            <qt:editorinfo movePoint="-25.56;-7.67"/>
+        </transition>
+        <transition type="external" event="out0" target="out0">
+            <qt:editorinfo movePoint="19.17;12.78"/>
+        </transition>
+        <transition type="external" event="out2" target="out2"/>
+    </state>
+    <final id="out1">
+        <qt:editorinfo scenegeometry="246.62;885.54;226.62;865.54;40;40" geometry="246.62;885.54;-20;-20;40;40"/>
+    </final>
+    <final id="out0">
+        <qt:editorinfo scenegeometry="395.20;885.54;375.20;865.54;40;40" geometry="395.20;885.54;-20;-20;40;40"/>
+    </final>
+    <final id="out2">
+        <qt:editorinfo scenegeometry="537.97;737.31;517.97;717.31;40;40" geometry="537.97;737.31;-20;-20;40;40"/>
+    </final>
+    <state id="State_6">
+        <qt:editorinfo scenegeometry="517.22;311.30;487.03;109.38;521.20;536.71" geometry="517.22;311.30;-30.19;-201.92;521.20;536.71"/>
+        <state id="Parent">
+            <qt:editorinfo scenegeometry="640.84;368.90;507.03;181.58;228.94;436.79" geometry="123.62;57.60;-133.81;-187.32;228.94;436.79"/>
+            <final id="succeeded">
+                <qt:editorinfo scenegeometry="567.61;572.01;547.61;552.01;40;40" geometry="-73.23;203.11;-20;-20;40;40"/>
+            </final>
+            <initial>
+                <qt:editorinfo scenegeometry="323.29;306.81;303.29;286.81;40;40" geometry="-15.94;-68.15;-20;-20;40;40"/>
+                <transition type="external" event="Transition_5" target="dummy_print_child"/>
+            </initial>
+            <datamodel>
+                <data id="print_text" expr="Parent_Text"/>
+            </datamodel>
+            <transition type="external" event="succeeded" target="succeeded">
+                <qt:editorinfo startTargetFactors="83.07;80.93"/>
+            </transition>
+            <state id="dummy_print_child">
+                <qt:editorinfo scenegeometry="342.19;406.81;232.22;356.81;182.13;100" geometry="2.96;31.85;-109.97;-50;182.13;100"/>
+                <transition type="external" event="succeeded" target="succeeded">
+                    <qt:editorinfo startTargetFactors="11.55;41.38"/>
+                </transition>
+                <datamodel>
+                    <data id="print_text" expr="Child_text">
+                        <qt:editorinfo geometry="-214.68;-184.01;0;0;0;0"/>
+                    </data>
+                </datamodel>
+            </state>
+        </state>
+        <transition type="external" event="succeeded" target="dummy_outcome">
+            <qt:editorinfo startTargetFactors="59.33;94.40"/>
+        </transition>
+        <initial>
+            <qt:editorinfo scenegeometry="571.72;245.89;551.72;225.89;40;40" geometry="356.11;-71.47;-20;-20;40;40"/>
+            <transition type="external" event="Transition_2" target="Parent">
+                <qt:editorinfo endTargetFactors="75.29;12.38"/>
+            </transition>
+        </initial>
+        <final id="succeeded">
+            <qt:editorinfo scenegeometry="585.05;562.03;565.05;542.03;40;40" geometry="369.44;244.67;-20;-20;40;40"/>
+        </final>
+    </state>
+</scxml>

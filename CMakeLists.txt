@@ -19,6 +19,6 @@ install(DIRECTORY
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  catkin_add_nosetests(tests)
+  catkin_add_nosetests(tests/test_builder.py)
 endif()
 

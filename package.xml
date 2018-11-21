@@ -19,6 +19,7 @@
   <depend>rospy</depend>
   <depend>smach</depend>
 
+  <test_depend>rosunit</test_depend>
 
 
   <export>
