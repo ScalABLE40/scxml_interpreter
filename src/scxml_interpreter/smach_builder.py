@@ -48,7 +48,7 @@ class SmachBuilder(object):
                     self.create_child_states(child_interface, child_state)
                 else:
                     child_state = self.create_simple_state(child_interface)
-                parent_SM.add(child_interface.id, child_state, child_interface.transitions)
+                parent_SM.add(child_interface.identifier, child_state, child_interface.transitions)
                 self._register_states_cb(parent_SM, parent_interface, child_state, child_interface, True)
 
         for i_key in set(parent_SM.get_registered_output_keys()).union(set(parent_SM.get_registered_input_keys())):
@@ -70,17 +70,17 @@ class SmachBuilder(object):
                     self.create_child_states(child_interface, child_state)
                 else:
                     child_state = self.create_simple_state(child_interface)
-                parent_SM.add(child_interface.id, child_state)
+                parent_SM.add(child_interface.identifier, child_state)
                 self._register_states_cb(parent_SM, parent_interface, child_state, child_interface, True)
 
         for i_key in set(parent_SM.get_registered_output_keys()).union(set(parent_SM.get_registered_input_keys())):
             self.userdata[i_key] = None
 
     def _register_states_cb(self, open_sm, sm_interface, child_state, child_interface, add_keys):
-        if(child_interface.id == sm_interface.initial_state_id):
+        if(child_interface.identifier == sm_interface.initial_state_id):
             open_sm.register_start_cb(convert_datamodel_to_userdata, [child_interface.data])
         else:
-            open_sm.register_transition_cb(transition_convertion, [child_interface.id, child_interface.data])
+            open_sm.register_transition_cb(transition_convertion, [child_interface.identifier, child_interface.data])
         if(add_keys):
             for keys in set(child_state.get_registered_output_keys())\
                         .union(set(child_state.get_registered_input_keys())):
@@ -104,14 +104,14 @@ class SmachBuilder(object):
             ##Use Auto matched
         matching_states = []
         for provider in self._provider:
-            match_state = provider.get_state(stateInterface.id)
+            match_state = provider.get_state(stateInterface.identifier)
             if(match_state is not None):
                 matching_states.append(match_state)
 
         if(len(matching_states) == 0):
             ##No state found in the registered provider
             ##Raise Error Code
-            raise NameError("No State matching name found for the %s state. Please check Providers."%(stateInterface.id))
+            raise NameError("No State matching name found for the %s state. Please check Providers."%(stateInterface.identifier))
         elif(len(matching_states) > 1):
             ## more than one matching
             raise NameError("More than one state matching name found for the %s state. Please consider making it explicit in the SCXML file.")
@@ -124,7 +124,7 @@ class SmachBuilder(object):
         if("python_state" in stateInterface.data):
             for provider in self._provider:
                 found_state = provider.get_state(stateInterface.data["python_state"])
-                rospy.logdebug("State '%s' linked to '%s' python state set." % (stateInterface.id, stateInterface.data["python_state"]))
+                rospy.logdebug("State '%s' linked to '%s' python state set." % (stateInterface.identifier, stateInterface.data["python_state"]))
             if found_state is None:
                 #No matching found for the user define state
                 raise NameError("The linked Python State '%s' for the State '%s' was not found. Please check Providers."

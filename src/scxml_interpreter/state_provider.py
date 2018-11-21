@@ -17,7 +17,7 @@ class SmachStateProvider(object):
 
     def _get_all_smach_states(self, pkg_name):
         pkg = importlib.import_module(pkg_name)
-        for importer, modname, ispkg in pkgutil.iter_modules(pkg.__path__):
+        for ___, modname, ____ in pkgutil.iter_modules(pkg.__path__):
             module = pkg_name + "." + str(modname)
             if not(module in sys.modules):
                 module_ref = importlib.import_module(module)

@@ -7,7 +7,6 @@ import os
 
 from scxml_interpreter.interfaces import SimpleStateInterface, CompoundStateInterface, \
                                         SCXMLInterface, ParallelStateInterface
-from scxml_interpreter.Errorexecptions import *
 
 
 def convert_to_concurence_map(cond):
@@ -147,10 +146,10 @@ class Converter(object):
         node_id = node.attrib.get('id')
         if(node_id is None):
             raise KeyError("[SCXML Interpreter] No ID found for a simple state!")
-        transitions, default, map = self.convert_parallel_transitions(node, node_id)
+        transitions, default, outcome_map = self.convert_parallel_transitions(node, node_id)
         datamodel = self.convert_datamodel(node, node_id)
         states = self.get_child_interfaces(node)
-        return ParallelStateInterface(node_id, datamodel, default, map, transitions, states)
+        return ParallelStateInterface(node_id, datamodel, default, outcome_map, transitions, states)
 
 
 class SCXMLParser(Converter):
@@ -173,7 +172,8 @@ class SCXMLParser(Converter):
     def parsing_string(self, string):
         try:
             root = etree.fromstring(string)
-        except ParseError as ex:
+        except Exception as ex:
             rospy.logerr(ex)
-            rospy.logerr('Parsing is not correct and the file is not SCXML')
+            rospy.logerr('Parsing is not correct or the file is not SCXML')
+            raise ex
         return self.convert_to_interface(root)
