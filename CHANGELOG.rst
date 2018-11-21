@@ -2,8 +2,8 @@
 Changelog for package scxml_interpreter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2018-11-21)
+------------------
 * added dummy state and test for scxml_interpreter
 * changed id to identifier
 * removed old tests
