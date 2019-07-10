@@ -15,12 +15,12 @@
   <author email="shruti.subramanian@ipa.fhg.de">Shruti Subramanian</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>rostest</build_depend>
-  <depend>rospy</depend>
-  <depend>smach</depend>
+
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>smach</exec_depend>
 
   <test_depend>rosunit</test_depend>
-
+  <test_depend>rostest</test_depend>
 
   <export>
 
