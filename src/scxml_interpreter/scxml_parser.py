@@ -22,11 +22,9 @@ def convert_to_concurence_map(cond):
                 list_ = cond_or.split('.')
                 map_list.append({list_[0]: list_[1]})
     else:
-        map_ = {}
         for cond_and in cond_.split(' AND '):
             list_and = cond_and.split('.')
-            map_[list_and[0]] = list_and[1]
-        map_list.append(map_)
+            map_list.append({list_and[0]: list_and[1]})
     return map_list
 
 
@@ -68,27 +66,25 @@ class Converter(object):
 
     def convert_parallel_transitions(self, xml_node, state_id):
         transitions = {}
-        default = None
+        default = "failed"
         outcome_map = {}
         for transition in xml_node.findall('transition'):
             event = transition.attrib.get('event')
             target = transition.attrib.get('target')
             cond = transition.attrib.get('cond')
-            if (event == "default"):
-                default = target
-                transitions["default"] = default
-                continue
             if (event is None):
                 raise KeyError("No Transition Event for %s !" % state_id)
             if (target is None):
                 raise KeyError("No Transition Target for %s !" % state_id)
             if (cond is None):
-                raise KeyError("No Transition Condition for %s !" % state_id)
-
-            map_list = convert_to_concurence_map(cond)
-            for map_ in map_list:
-                outcome_map[event] = map_
+                if event != default and event not in transitions.keys():
+                    raise KeyError("No Transition Condition for %s !" % state_id)
+            else:
+                map_list = convert_to_concurence_map(cond)
+                outcome_map[event] = map_list
                 transitions[event] = target
+            if (event == default and (default not in transitions.keys())):
+                transitions[default] = default
         if default is None:
             rospy.logwarn("No default outcome defined for Parallel %s !" % state_id)
         return transitions, default, outcome_map

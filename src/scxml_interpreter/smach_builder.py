@@ -96,7 +96,7 @@ class SmachBuilder(object):
 
     def create_parallel_state(self, state_interface):
         return smach.Concurrence(state_interface.get_outcomes(),
-                                 default_outcome="default",
+                                 default_outcome="failed",
                                  outcome_map=state_interface.outcome_map,
                                  )
 
