@@ -12,43 +12,35 @@ def convert_to_concurence_map(cond):
     # split mapping
     cond_ = cond.strip()
     map_list = []
-    if(cond_.find(' AND ') == -1):                          # There are no "and" conditions
-        if(cond_.find(' OR ') == -1):                       # There are no "or" conditions
+    if(cond_.find(' AND ') == -1):                          # there are no "and" conditions
+        if(cond_.find(' OR ') == -1):                       # there are no "or" conditions
             list_ = cond_.split('.')
             map_list.append({list_[0]: list_[1]})
-            
-        else:                                               # There are only "or" conditions
+        else:                                               # there are only "or" conditions
             
             # State1.succeeded OR State2.succeeded
             # succeeded: [{State1: succeeded} , {State2: succeeded }]
-            
             for cond_or in cond_.split(' OR '):
                 list_ = cond_or.split('.')
                 map_list.append({list_[0]: list_[1]})
     else:
-        
-        if(cond_.find(' OR ') == -1):                       # There are only "and" conditions
+        if(cond_.find(' OR ') == -1):                       # there are only "and" conditions
             
             # State1.succeeded AND State2.succeeded
             # succeeded: [{State1: succeeded, State2: succeeded }]
-            
             cond_and_dict = {}
             for cond_and_parcel in cond_.split(' AND '):
                 list_and = cond_and_parcel.split('.')
-                cond_and_dict[list_and[0]] = list_and[1]
-                
+                cond_and_dict[list_and[0]] = list_and[1]   
             map_list.append(cond_and_dict)
             
-        else:                                               # There are both "or" and "and" conditions
+        else:                                               # there are both "or" and "and" conditions
             for cond_or in cond_.split(' OR '):
-                
                 cond_and_dict = {}
                 for cond_and_parcel in cond_or.split(' AND '):
                     list_and = cond_and_parcel.split('.')
                     cond_and_dict[list_and[0]] = list_and[1]
-                
                 map_list.append(cond_and_dict)
-
     return map_list
 
 class Converter(object):
