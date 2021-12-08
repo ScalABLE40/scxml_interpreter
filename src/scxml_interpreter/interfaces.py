@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 class SimpleStateInterface(object):
     def __init__(self, identifier, data={}, transitions={}, onentry={}, onexit={}):
         self.identifier = identifier
@@ -11,7 +11,13 @@ class SimpleStateInterface(object):
         return list(self.transitions.keys())
 
     def __str__(self):
-        return ("SimpleStateInterface(\nidentifier=%s\ndata=%s\ntransitions=%s\nonentry=%s\nonexit=%s\n)"%(str(self.id),str(self.data),str(self.transitions),str(self.onentry),str(self.onexit)))
+        return "SimpleStateInterface(\nidentifier=%s\ndata=%s\ntransitions=%s\nonentry=%s\nonexit=%s\n)" % (
+            str(self.id),
+            str(self.data),
+            str(self.transitions),
+            str(self.onentry),
+            str(self.onexit),
+        )
 
 
 class ContainerStateInterface(SimpleStateInterface):
@@ -20,10 +26,10 @@ class ContainerStateInterface(SimpleStateInterface):
         self.childs_interface = states
 
     def get_outcome_target(self, outcome):
-        if(outcome in self.transitions):
+        if outcome in self.transitions:
             return self.transitions[outcome]
         else:
-            return None ##TODO return proper error code
+            return None  ##TODO return proper error code
 
 
 class CompoundStateInterface(ContainerStateInterface):
@@ -34,13 +40,19 @@ class CompoundStateInterface(ContainerStateInterface):
     def __str__(self):
         state_print = ""
         for state in self.childs_interface:
-            if(isinstance(state, SimpleStateInterface) or isinstance(state, CompoundStateInterface)):
-                state_print = state_print + '  ' + state.identifier + '\n'
+            if isinstance(state, SimpleStateInterface) or isinstance(state, CompoundStateInterface):
+                state_print = state_print + "  " + state.identifier + "\n"
             else:
-                state_print = state_print + '  ' + state + '\n'
+                state_print = state_print + "  " + state + "\n"
 
-        return ("CompoundStateInterface(\identifier=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\nonentry=%s\nonexit=%s\n)"%(
-            str(self.identifier),str(self.data),str(self.transitions),str(state_print),str(self.initial_state_id),str(self.onentry),str(self.onexit))
+        return "CompoundStateInterface(\identifier=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\nonentry=%s\nonexit=%s\n)" % (
+            str(self.identifier),
+            str(self.data),
+            str(self.transitions),
+            str(state_print),
+            str(self.initial_state_id),
+            str(self.onentry),
+            str(self.onexit),
         )
 
 
@@ -55,16 +67,22 @@ class ParallelStateInterface(ContainerStateInterface):
         state_print = ""
         for state in self.childs_interface:
             try:
-                state_print = state_print + '  ' + state.id + '\n'
+                state_print = state_print + "  " + state.id + "\n"
             except AttributeError:
                 pass
             try:
-                state_print = state_print + '  ' + state + '\n'
+                state_print = state_print + "  " + state + "\n"
             except AttributeError:
                 pass
 
-        return ("ParallelStateInterface(\identifier=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\nonentry=%s\nonexit=%s\n)"%(
-            str(self.identifier),str(self.data),str(self.transitions),str(state_print),str(self.initial_state_id),str(self.onentry),str(self.onexit))
+        return "ParallelStateInterface(\identifier=%s\ndata=%s\ntransitions=%s\nstates=[\n%s]\ninitial_state_id=%s\nonentry=%s\nonexit=%s\n)" % (
+            str(self.identifier),
+            str(self.data),
+            str(self.transitions),
+            str(state_print),
+            str(self.initial_state_id),
+            str(self.onentry),
+            str(self.onexit),
         )
 
 
@@ -76,7 +94,11 @@ class SCXMLInterface(CompoundStateInterface):
     def __str__(self):
         state_print = ""
         for state in self.childs_interface:
-            state_print = state_print + '  ' + state.id + '\n'
+            state_print = state_print + "  " + state.id + "\n"
 
-        return ("RootStateInterface(\ninitial_state_id=%s\ndata=%s\nfinal_states=%s\nstates=[\n%s])"
-                % (str(self.initial_state_id), str(self.data), str(self.final_states), str(state_print)))
+        return "RootStateInterface(\ninitial_state_id=%s\ndata=%s\nfinal_states=%s\nstates=[\n%s])" % (
+            str(self.initial_state_id),
+            str(self.data),
+            str(self.final_states),
+            str(state_print),
+        )

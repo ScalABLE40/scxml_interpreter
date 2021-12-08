@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import smach
@@ -10,7 +10,7 @@ class dummy_print(smach.State):
 
     def execute(self, ud):
         print(ud._ud)
-        if ud.print_text == '':
+        if ud.print_text == "":
             text_ = "Hello World ! I'm a dummy printing state"
         else:
             text_ = ud.print_text
@@ -25,13 +25,13 @@ class dummy_outcome(smach.State):
 
     def execute(self, ud):
         rospy.sleep(1.0)
-        if not(ud.outcome):
+        if not (ud.outcome):
             rospy.loginfo("My outcome is not defined. I will move to out0 !")
             return "out0"
-        if(ud.outcome == "out1"):
+        if ud.outcome == "out1":
             rospy.loginfo("My outcome is defined to %s" % (str(ud.outcome)))
             return "out1"
-        elif(ud.outcome == "out2"):
+        elif ud.outcome == "out2":
             rospy.loginfo("My outcome is defined to %s" % (str(ud.outcome)))
             return "out2"
         else:
